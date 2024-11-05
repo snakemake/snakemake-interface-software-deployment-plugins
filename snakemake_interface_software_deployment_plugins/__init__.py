@@ -6,6 +6,7 @@ __license__ = "MIT"
 from abc import ABC, abstractmethod
 import hashlib
 from pathlib import Path
+import sys
 from typing import List, Optional, Self
 
 from snakemake_interface_software_deployment_plugins.settings import SoftwareDeploymentProviderSettingsBase
@@ -100,19 +101,24 @@ class SoftwareDeploymentProviderBase(ABC):
             name: str,
             prefix: Path,
             settings: Optional[SoftwareDeploymentProviderSettingsBase] = None,
+            parent_env: Optional[EnvBase] = None
         ):
         self.settings = settings
         self.deployment_path = prefix / name
         self.archive_path = prefix / f"{name}-archive"
+        self.parent_env = parent_env
         self.__post_init__()
 
     def __post_init__(self):  # noqa B027
+        """Do stuff after object initialization, e.g. checking for availability of
+        commands.
+        """
         pass
 
     @classmethod
-    @abstractmethod
-    def get_env_cls(cls) -> EnvBase:
-        ...
+    def get_env_cls(cls):
+        provider = sys.modules[cls.__module__]  # get module of derived class
+        return provider.Env
 
     def env(self, spec: EnvSpecBase) -> EnvBase:
-        return self.get_env_cls()(self, spec)
+        return self.get_env_cls()(provider=self, spec=spec, parent_env=self.parent_env)
