@@ -17,7 +17,7 @@ from snakemake_interface_common.plugin_registry.attribute_types import (
 )
 from snakemake_interface_software_deployment_plugins.registry.plugin import Plugin
 from snakemake_interface_common.plugin_registry import PluginRegistryBase
-from snakemake_interface_software_deployment_plugins import SoftwareDeploymentProviderBase, _common as common
+from snakemake_interface_software_deployment_plugins import EnvBase, SoftwareDeploymentProviderBase, _common as common
 
 
 class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
@@ -38,11 +38,6 @@ class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
 
     def expected_attributes(self) -> Mapping[str, AttributeType]:
         return {
-            "common_settings": AttributeType(
-                cls=CommonSettings,
-                mode=AttributeMode.REQUIRED,
-                kind=AttributeKind.OBJECT,
-            ),
             "SoftwareDeploymentProviderSettings": AttributeType(
                 cls=SoftwareDeploymentProviderSettingsBase,
                 mode=AttributeMode.OPTIONAL,
@@ -53,4 +48,9 @@ class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
                 mode=AttributeMode.REQUIRED,
                 kind=AttributeKind.CLASS,
             ),
+            "Env": AttributeType(
+                cls=EnvBase,
+                mode=AttributeMode.REQUIRED,
+                kind=AttributeKind.CLASS,
+            )
         }

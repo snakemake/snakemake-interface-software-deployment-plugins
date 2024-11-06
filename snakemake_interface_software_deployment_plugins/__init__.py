@@ -8,6 +8,7 @@ import hashlib
 from pathlib import Path
 import sys
 from typing import List, Optional, Self
+import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import SoftwareDeploymentProviderSettingsBase
 
@@ -17,15 +18,14 @@ class EnvSpecBase(ABC):
 
 
 class EnvBase(ABC):
-    def __init__(self, provider: "SoftwareDeploymentProviderBase", spec: EnvSpecBase, parent_env: Optional[Self]):
+    def __init__(self, provider: "SoftwareDeploymentProviderBase", spec: EnvSpecBase):
         self.provider = provider
         self.spec = spec
-        self.parent_env = parent_env
         self._managed_hash_store = None
         self._managed_deployment_hash_store = None
         self.__post_init__()
 
-    def __post_init__(self):  # noqa B027
+    def __post_init__(self) -> None:  # noqa B027
         """Do stuff after object initialization."""
         pass
 
@@ -35,21 +35,11 @@ class EnvBase(ABC):
         ...
 
     @abstractmethod
-    def deploy(self):
+    def deploy(self) -> None:
         """Deploy the environment to self.provider.deployment_path.
 
         When issuing shell commands, the environment should use
-        self.managed_decorate_shellcmd in order to ensure that it runs within eventual
-        parent environments (e.g. a container or an env module).
-        """
-        ...
-
-    @abstractmethod
-    def archive(self):
-        """Archive the environment to self.provider.archive_path.
-        
-        When issuing shell commands, the environment should use
-        self.managed_decorate_shellcmd in order to ensure that it runs within eventual
+        self.provider.run(cmd: str) in order to ensure that it runs within eventual
         parent environments (e.g. a container or an env module).
         """
         ...
@@ -62,8 +52,39 @@ class EnvBase(ABC):
         """
         ...
 
+    def managed_decorate_shellcmd(self, cmd: str) -> str:
+        cmd = self.decorate_shellcmd(cmd)
+        if self.provider.parent_env is not None:
+            cmd = self.provider.parent_env.managed_decorate_shellcmd(cmd)
+        return cmd
+
+    def managed_hash(self) -> str:
+        return self._managed_generic_hash("hash")
+
+    def _managed_generic_hash(self, kind: str) -> str:
+        store = getattr(self, f"_managed_{kind}_store")
+        if store is None:
+            hash_object = hashlib.md5()
+            if self.provider.parent_env is not None:
+                hash_object.update(getattr(self.provider.parent_env, kind)().encode())
+            getattr(self, kind)(hash_object)
+            store = hash_object.hexdigest()
+        return store
+
+
+class DeployableEnvBase(ABC):
     @abstractmethod
-    def deployment_hash(self, hash_object):
+    def deploy(self) -> None:
+        """Deploy the environment to self.provider.deployment_path.
+
+        When issuing shell commands, the environment should use
+        self.provider.run(cmd: str) in order to ensure that it runs within eventual
+        parent environments (e.g. a container or an env module).
+        """
+        ...
+
+    @abstractmethod
+    def deployment_hash(self, hash_object) -> None:
         """Update given hash such that it changes whenever the environment 
         needs to be redeployed, e.g. because its content has changed or the 
         deployment location has changed. The latter is only relevant if the
@@ -72,27 +93,19 @@ class EnvBase(ABC):
         """
         ...
 
-    def managed_decorate_shellcmd(self, cmd: str) -> str:
-        cmd = self.decorate_shellcmd(cmd)
-        if self.parent_env is not None:
-            cmd = self.parent_env.managed_decorate_shellcmd(cmd)
-        return cmd
-
-    def managed_hash(self) -> str:
-        return self._managed_generic_hash("hash")
-    
     def managed_deployment_hash(self) -> str:
         return self._managed_generic_hash("deployment_hash")
 
-    def _managed_generic_hash(self, kind: str) -> str:
-        store = getattr(self, f"_managed_{kind}_store")
-        if store is None:
-            hash_object = hashlib.md5()
-            if self.parent_env is not None:
-                hash_object.update(getattr(self.parent_env, kind)().encode())
-            getattr(self, kind)(hash_object)
-            store = hash_object.hexdigest()
-        return store
+class ArchiveableEnvBase(ABC):
+    @abstractmethod
+    def archive(self) -> None:
+        """Archive the environment to self.provider.archive_path.
+        
+        When issuing shell commands, the environment should use
+        self.provider.run(cmd: str) in order to ensure that it runs within eventual
+        parent environments (e.g. a container or an env module).
+        """
+        ...
 
 
 class SoftwareDeploymentProviderBase(ABC):
@@ -122,3 +135,10 @@ class SoftwareDeploymentProviderBase(ABC):
 
     def env(self, spec: EnvSpecBase) -> EnvBase:
         return self.get_env_cls()(provider=self, spec=spec, parent_env=self.parent_env)
+
+    def run_cmd(self, cmd: str) -> bytes:
+        """Run a command while potentially respecting the parent_env."""
+        if self.parent_env:
+            cmd = self.parent_env.managed_decorate_shellcmd(cmd)
+        res = sp.run(cmd, shell=True, check=True, stdout=sp.PIPE, stderr=sp.PIPE)
+        return res.stdout
