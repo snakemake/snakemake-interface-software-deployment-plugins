@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 import hashlib
 from pathlib import Path
 import sys
-from typing import List, Optional, Self
+from typing import Optional
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import SoftwareDeploymentProviderSettingsBase
@@ -35,18 +35,8 @@ class EnvBase(ABC):
         ...
 
     @abstractmethod
-    def deploy(self) -> None:
-        """Deploy the environment to self.provider.deployment_path.
-
-        When issuing shell commands, the environment should use
-        self.provider.run(cmd: str) in order to ensure that it runs within eventual
-        parent environments (e.g. a container or an env module).
-        """
-        ...
-
-    @abstractmethod
     def hash(self, hash_object) -> None:
-        """Update given hash such that it changes whenever the environment
+        """Update given hash object such that it changes whenever the environment
         could potentially contain a different set of software (in terms of versions or
         packages).
         """
@@ -95,6 +85,7 @@ class DeployableEnvBase(ABC):
 
     def managed_deployment_hash(self) -> str:
         return self._managed_generic_hash("deployment_hash")
+
 
 class ArchiveableEnvBase(ABC):
     @abstractmethod
