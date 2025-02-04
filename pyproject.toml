@@ -1,9 +1,9 @@
 [tool.poetry]
 authors = ["Johannes Köster <johannes.koester@uni-due.de>"]
-description = "This package provides a stable interface for interactions between Snakemake and its executor plugins."
+description = "This package provides a stable interface for interactions between Snakemake and its software deployment plugins."
 license = "MIT"
-name = "snakemake-interface-executor-plugins"
-packages = [{include = "snakemake_interface_executor_plugins"}]
+name = "snakemake-interface-software-deployment-plugins"
+packages = [{include = "snakemake_interface_software_deployment_plugins"}]
 readme = "README.md"
 version = "9.3.0"
 
@@ -13,7 +13,7 @@ python = "^3.11"
 throttler = "^1.2.2"
 snakemake-interface-common = "^1.17.4"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = "^24.0.0"
 coverage = {extras = ["toml"], version = "^6.3.1"}
 flake8 = "^4.0.1"
