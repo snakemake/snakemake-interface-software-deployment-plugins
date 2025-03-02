@@ -4,9 +4,12 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional, Type
+from snakemake_interface_software_deployment_plugins import EnvBase, SoftwareDeploymentProviderBase
 from snakemake_interface_software_deployment_plugins.settings import (
     CommonSettings,
+    SoftwareDeploymentProviderSettingsBase,
     SoftwareDeploymentSettingsBase,
 )
 import snakemake_interface_software_deployment_plugins._common as common
@@ -21,8 +24,12 @@ class Plugin(PluginBase):
     _software_deployment_settings_cls: Optional[Type[SoftwareDeploymentSettingsBase]]
     _name: str
 
-    @property
-    def software_deployment_provider(self):
+    def software_deployment_provider(
+        self,
+        prefix: Path,
+        settings: Optional[SoftwareDeploymentProviderSettingsBase] = None,
+        parent_env: Optional[EnvBase] = None,
+    ) -> SoftwareDeploymentProviderBase:
         return self._software_deployment_provider(name=self._only_name)
 
     @property

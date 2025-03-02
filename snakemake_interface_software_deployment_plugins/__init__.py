@@ -21,8 +21,8 @@ class EnvBase(ABC):
     def __init__(self, provider: "SoftwareDeploymentProviderBase", spec: EnvSpecBase):
         self.provider = provider
         self.spec = spec
-        self._managed_hash_store = None
-        self._managed_deployment_hash_store = None
+        self._managed_hash_store: Optional[str] = None
+        self._managed_deployment_hash_store: Optional[str] = None
         self.__post_init__()
 
     def __post_init__(self) -> None:  # noqa B027
@@ -35,7 +35,7 @@ class EnvBase(ABC):
         ...
 
     @abstractmethod
-    def hash(self, hash_object) -> None:
+    def record_hash(self, hash_object) -> None:
         """Update given hash object such that it changes whenever the environment
         could potentially contain a different set of software (in terms of versions or
         packages).
@@ -48,16 +48,17 @@ class EnvBase(ABC):
             cmd = self.provider.parent_env.managed_decorate_shellcmd(cmd)
         return cmd
 
-    def managed_hash(self) -> str:
+    def hash(self) -> str:
         return self._managed_generic_hash("hash")
 
     def _managed_generic_hash(self, kind: str) -> str:
         store = getattr(self, f"_managed_{kind}_store")
         if store is None:
+            record_hash = f"record_{kind}"
             hash_object = hashlib.md5()
             if self.provider.parent_env is not None:
-                hash_object.update(getattr(self.provider.parent_env, kind)().encode())
-            getattr(self, kind)(hash_object)
+                getattr(self.provider.parent_env, record_hash)(hash_object)
+            getattr(self, record_hash)(hash_object)
             store = hash_object.hexdigest()
         return store
 
@@ -74,7 +75,7 @@ class DeployableEnvBase(ABC):
         ...
 
     @abstractmethod
-    def deployment_hash(self, hash_object) -> None:
+    def record_deployment_hash(self, hash_object) -> None:
         """Update given hash such that it changes whenever the environment 
         needs to be redeployed, e.g. because its content has changed or the 
         deployment location has changed. The latter is only relevant if the
@@ -83,7 +84,7 @@ class DeployableEnvBase(ABC):
         """
         ...
 
-    def managed_deployment_hash(self) -> str:
+    def deployment_hash(self) -> str:
         return self._managed_generic_hash("deployment_hash")
 
 
