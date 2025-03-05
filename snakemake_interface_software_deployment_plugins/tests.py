@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Type
 import subprocess as sp
 
 import pytest
@@ -12,11 +12,11 @@ _TEST_SDM_NAME = "test-sdm"
 
 
 
-class TestStorageBase(ABC):
+class TestSoftwareDeploymentBase(ABC):
     __test__ = False
 
     @abstractmethod
-    def get_software_deployment_provider_class(self) -> SoftwareDeploymentProviderBase:
+    def get_software_deployment_provider_class(self) -> Type[SoftwareDeploymentProviderBase]:
         ...
 
     @abstractmethod
@@ -70,7 +70,7 @@ class TestStorageBase(ABC):
         assert any((tmp_path / "{_TEST_SDM_NAME}-archive").iterdir())
 
     def _get_env(self, provider) -> EnvBase:
-        return provider.get_env(spec=self.get_env_spec())
+        return provider.env(spec=self.get_env_spec())
 
     def _deploy(self, env: DeployableEnvBase, tmp_path):
         if not isinstance(env, DeployableEnvBase):

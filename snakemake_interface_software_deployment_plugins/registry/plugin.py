@@ -6,7 +6,7 @@ __license__ = "MIT"
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Type
-from snakemake_interface_software_deployment_plugins import EnvBase, SoftwareDeploymentProviderBase
+from snakemake_interface_software_deployment_plugins import EnvBase, EnvSpecBase, SoftwareDeploymentProviderBase
 from snakemake_interface_software_deployment_plugins.settings import (
     CommonSettings,
     SoftwareDeploymentProviderSettingsBase,
@@ -19,9 +19,10 @@ from snakemake_interface_common.plugin_registry.plugin import PluginBase
 
 @dataclass
 class Plugin(PluginBase):
-    _software_deployment_provider: object
+    _software_deployment_provider: Type[SoftwareDeploymentProviderBase]
     common_settings: CommonSettings
     _software_deployment_settings_cls: Optional[Type[SoftwareDeploymentSettingsBase]]
+    _env_spec_cls: Type[EnvSpecBase]
     _name: str
 
     def software_deployment_provider(
@@ -47,3 +48,10 @@ class Plugin(PluginBase):
     @property
     def settings_cls(self):
         return self._software_deployment_settings_cls
+    
+    @property
+    def env_spec_cls(self):
+        return self._env_spec_cls
+    
+    def env_spec(self, within: Optional[EnvSpecBase] = None, **kwargs) -> EnvSpecBase:
+        return self.env_spec_cls(within=within, **kwargs)

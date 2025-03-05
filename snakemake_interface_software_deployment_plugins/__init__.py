@@ -4,6 +4,7 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 import hashlib
 from pathlib import Path
 import sys
@@ -13,7 +14,7 @@ import subprocess as sp
 from snakemake_interface_software_deployment_plugins.settings import SoftwareDeploymentProviderSettingsBase
 
 
-class EnvSpecBase(ABC):
+class EnvSpecBase:
     pass
 
 
@@ -66,7 +67,7 @@ class EnvBase(ABC):
 class DeployableEnvBase(ABC):
     @abstractmethod
     def deploy(self) -> None:
-        """Deploy the environment to self.provider.deployment_path.
+        """Deploy the environment to self.deployment_path.
 
         When issuing shell commands, the environment should use
         self.provider.run(cmd: str) in order to ensure that it runs within eventual
@@ -84,8 +85,16 @@ class DeployableEnvBase(ABC):
         """
         ...
 
+    @abstractmethod
+    def remove(self) -> None:
+        """Remove the deployed environment."""
+        ...
+
     def deployment_hash(self) -> str:
         return self._managed_generic_hash("deployment_hash")
+    
+    def deployment_path(self) -> Path:
+        return self.provider.deployment_path / self.deployment_hash()
 
 
 class ArchiveableEnvBase(ABC):
@@ -106,7 +115,7 @@ class SoftwareDeploymentProviderBase(ABC):
             name: str,
             prefix: Path,
             settings: Optional[SoftwareDeploymentProviderSettingsBase] = None,
-            parent_env: Optional[EnvBase] = None
+            parent_env: Optional[EnvBase] = None,
         ):
         self.settings = settings
         self.deployment_path = prefix / name
@@ -126,7 +135,7 @@ class SoftwareDeploymentProviderBase(ABC):
         return provider.Env
 
     def env(self, spec: EnvSpecBase) -> EnvBase:
-        return self.get_env_cls()(provider=self, spec=spec, parent_env=self.parent_env)
+        return self.get_env_cls()(provider=self, spec=spec)
 
     def run_cmd(self, cmd: str) -> bytes:
         """Run a command while potentially respecting the parent_env."""
