@@ -59,13 +59,13 @@ class TestSoftwareDeploymentBase(ABC):
         cmd = self.get_test_cmd()
         decorated_cmd = env.managed_decorate_shellcmd(cmd)
         assert cmd != decorated_cmd
-        assert sp.run(decorated_cmd, shell=True).returncode == 0
+        assert sp.run(decorated_cmd, shell=True, executable="bash").returncode == 0
 
     def test_deploy(self, tmp_path):
         env = self._get_env(tmp_path)
         self._deploy(env, tmp_path)
         cmd = env.managed_decorate_shellcmd(self.get_test_cmd())
-        assert sp.run(cmd, shell=True).returncode == 0
+        assert sp.run(cmd, shell=True, executable="bash").returncode == 0
 
     def test_archive(self, tmp_path):
         env = self._get_env(tmp_path)
