@@ -16,14 +16,16 @@ class TestRegistry(TestRegistryBase):
         return SoftwareDeploymentPluginRegistry()
 
     def get_test_plugin_name(self) -> str:
-        return "conda"
+        return "envmodules"
 
     def validate_plugin(self, plugin: PluginBase):
-        assert plugin.settings_cls is not None
-        assert plugin.software_deployment_provider is not None
+        assert plugin.settings_cls is None
+        assert plugin.env_cls is not None
+        assert plugin.env_spec_cls is not None
 
     def validate_settings(self, settings: SettingsBase, plugin: PluginBase):
-        assert isinstance(settings, plugin.settings_cls)
+        # assert isinstance(settings, plugin.settings_cls)
+        pass
 
     def get_example_args(self) -> List[str]:
-        return ["--sdm-conda-base-path", "/path/to/conda"]
+        return []
