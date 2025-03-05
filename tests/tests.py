@@ -1,9 +1,10 @@
 from typing import List
-from snakemake_interface_software_deployment_plugins.registry import SoftwareDeploymentPluginRegistry
+from snakemake_interface_software_deployment_plugins.registry import (
+    SoftwareDeploymentPluginRegistry,
+)
 from snakemake_interface_common.plugin_registry.tests import TestRegistryBase
 from snakemake_interface_common.plugin_registry.plugin import PluginBase, SettingsBase
 from snakemake_interface_common.plugin_registry import PluginRegistryBase
-from snakemake_interface_software_deployment_plugins.utils import format_cli_arg
 
 
 class TestRegistry(TestRegistryBase):
