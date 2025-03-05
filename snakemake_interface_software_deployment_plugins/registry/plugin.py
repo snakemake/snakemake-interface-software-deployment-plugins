@@ -36,11 +36,11 @@ class Plugin(PluginBase):
     @property
     def settings_cls(self):
         return self._software_deployment_settings_cls
-    
+
     @property
     def env_cls(self):
         return self._env_cls
-    
+
     @property
     def env_spec_cls(self):
         return self._env_spec_cls
