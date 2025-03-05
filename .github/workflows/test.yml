@@ -8,7 +8,7 @@ on:
     branches-ignore: []
 
 jobs:
-  formatting:
+  linting:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
