@@ -36,7 +36,7 @@ jobs:
         run: poetry run ruff format --check .
       
       - name: Lint
-        run: poerty run ruff check .
+        run: poetry run ruff check .
 
   testing:
     runs-on: ubuntu-latest
