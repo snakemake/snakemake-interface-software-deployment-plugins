@@ -1,9 +1,10 @@
 from typing import List
-from snakemake_interface_software_deployment_plugins.registry import SoftwareDeploymentPluginRegistry
+from snakemake_interface_software_deployment_plugins.registry import (
+    SoftwareDeploymentPluginRegistry,
+)
 from snakemake_interface_common.plugin_registry.tests import TestRegistryBase
 from snakemake_interface_common.plugin_registry.plugin import PluginBase, SettingsBase
 from snakemake_interface_common.plugin_registry import PluginRegistryBase
-from snakemake_interface_software_deployment_plugins.utils import format_cli_arg
 
 
 class TestRegistry(TestRegistryBase):
@@ -15,14 +16,16 @@ class TestRegistry(TestRegistryBase):
         return SoftwareDeploymentPluginRegistry()
 
     def get_test_plugin_name(self) -> str:
-        return "conda"
+        return "envmodules"
 
     def validate_plugin(self, plugin: PluginBase):
-        assert plugin.settings_cls is not None
-        assert plugin.software_deployment_provider is not None
+        assert plugin.settings_cls is None
+        assert plugin.env_cls is not None
+        assert plugin.env_spec_cls is not None
 
     def validate_settings(self, settings: SettingsBase, plugin: PluginBase):
-        assert isinstance(settings, plugin.settings_cls)
+        # assert isinstance(settings, plugin.settings_cls)
+        pass
 
     def get_example_args(self) -> List[str]:
-        return ["--sdm-conda-base-path", "/path/to/conda"]
+        return []

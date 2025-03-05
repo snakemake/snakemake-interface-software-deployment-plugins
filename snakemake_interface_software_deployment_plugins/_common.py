@@ -5,4 +5,6 @@ __license__ = "MIT"
 
 
 software_deployment_plugin_prefix = "snakemake-software-deployment-plugin-"
-software_deployment_plugin_module_prefix = software_deployment_plugin_prefix.replace("-", "_")
+software_deployment_plugin_module_prefix = software_deployment_plugin_prefix.replace(
+    "-", "_"
+)

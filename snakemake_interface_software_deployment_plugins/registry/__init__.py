@@ -6,8 +6,7 @@ __license__ = "MIT"
 import types
 from typing import Mapping
 from snakemake_interface_software_deployment_plugins.settings import (
-    CommonSettings,
-    SoftwareDeploymentProviderSettingsBase,
+    SoftwareDeploymentSettingsBase,
 )
 
 from snakemake_interface_common.plugin_registry.attribute_types import (
@@ -17,7 +16,7 @@ from snakemake_interface_common.plugin_registry.attribute_types import (
 )
 from snakemake_interface_software_deployment_plugins.registry.plugin import Plugin
 from snakemake_interface_common.plugin_registry import PluginRegistryBase
-from snakemake_interface_software_deployment_plugins import EnvBase, EnvSpecBase, SoftwareDeploymentProviderBase, _common as common
+from snakemake_interface_software_deployment_plugins import EnvBase, _common as common
 
 
 class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
@@ -31,31 +30,21 @@ class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
         """Load a plugin by name."""
         return Plugin(
             _name=name,
-            _software_deployment_provider=module.SoftwareDeploymentProvider,
-            common_settings=module.common_settings,
-            _software_deployment_settings_cls=getattr(module, "SoftwareDeploymentProviderSettings", None),
-            _env_spec_cls=module.EnvSpec,
+            _software_deployment_settings_cls=getattr(
+                module, "SoftwareDeploymentSettings", None
+            ),
+            _env_cls=module.EnvBase,
         )
 
     def expected_attributes(self) -> Mapping[str, AttributeType]:
         return {
-            "SoftwareDeploymentProviderSettings": AttributeType(
-                cls=SoftwareDeploymentProviderSettingsBase,
+            "SoftwareDeploymentSettings": AttributeType(
+                cls=SoftwareDeploymentSettingsBase,
                 mode=AttributeMode.OPTIONAL,
-                kind=AttributeKind.CLASS,
-            ),
-            "SoftwareDeploymentProvider": AttributeType(
-                cls=SoftwareDeploymentProviderBase,
-                mode=AttributeMode.REQUIRED,
                 kind=AttributeKind.CLASS,
             ),
             "Env": AttributeType(
                 cls=EnvBase,
-                mode=AttributeMode.REQUIRED,
-                kind=AttributeKind.CLASS,
-            ),
-            "EnvSpec": AttributeType(
-                cls=EnvSpecBase,
                 mode=AttributeMode.REQUIRED,
                 kind=AttributeKind.CLASS,
             ),
