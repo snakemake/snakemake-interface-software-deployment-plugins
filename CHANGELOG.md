@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.1.0...v0.1.1) (2025-03-05)
+
+
+### Bug Fixes
+
+* run test cmd in bash ([85effcf](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/85effcf86792f474fcfb0f880c36694e5dfe2307))
+
 ## 0.1.0 (2025-03-05)
 
 
