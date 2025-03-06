@@ -5,11 +5,10 @@ __license__ = "MIT"
 
 from abc import ABC, abstractmethod
 from copy import copy
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
-import sys
-from typing import Any, ClassVar, Dict, Optional, Tuple, Type
+from typing import Any, ClassVar, Dict, Iterable, Optional, Tuple, Type
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -17,27 +16,50 @@ from snakemake_interface_software_deployment_plugins.settings import (
 )
 
 
-_MANAGED_FIELDS = {
-    "settings",
-    "_managed_hash_store",
-    "_managed_deployment_hash_store",
-    "_obj_hash",
-}
-
-
-@dataclass
 class EnvSpecBase(ABC):
-    within: Optional["EnvSpecBase"]
-    fallback: Optional["EnvSpecBase"]
+    def __init__(self):
+        self.within: Optional["EnvSpecBase"] = None
+        self.fallback: Optional["EnvSpecBase"] = None
+        self.kind: str = self.__class__.__module__.common_settings.provides
+        self._obj_hash: Optional[int] = None
 
     @classmethod
     def env_cls(cls):
-        return sys.modules[__name__].EnvBase
+        return cls.__module__.EnvBase
+
+    @abstractmethod
+    def identity_attributes(self) -> Iterable[str]:
+        """Return the attributes of the subclass that uniquely identify the
+        environment spec. These are used for hashing and equality comparison.
+        """
+        ...
 
     def __or__(self, other: "EnvSpecBase") -> "EnvSpecBase":
         copied = copy(self)
         copied.fallback = other
+        copied._obj_hash = None
         return copied
+
+    def managed_identity_attributes(self) -> Iterable[str]:
+        yield from self.identity_attributes()
+        yield "kind"
+        yield "within"
+        yield "fallback"
+
+    def __hash__(self) -> int:
+        if self._obj_hash is None:
+            self._obj_hash = hash(
+                tuple(
+                    getattr(self, attr) for attr in self.managed_identity_attributes()
+                )
+            )
+        return self._obj_hash
+
+    def __eq__(self, other) -> bool:
+        return self.__class__ == other.__class__ and all(
+            getattr(self, attr) == getattr(other, attr)
+            for attr in self.managed_identity_attributes()
+        )
 
 
 @dataclass
@@ -119,20 +141,14 @@ class EnvBase:
     def __hash__(self) -> int:
         # take the hash of all fields by settings, _managed_hash_store and _managed_deployment_hash_store
         if self._obj_hash is None:
-            self._obj_hash = hash(
-                tuple(
-                    getattr(self, field.name)
-                    for field in fields(self)
-                    if field.name not in _MANAGED_FIELDS
-                )
-            )
+            self._obj_hash = hash(self.hash())
         return self._obj_hash
 
     def __eq__(self, other) -> bool:
-        return self.__class__ == other.__class__ and all(
-            getattr(self, field.name) == getattr(other, field.name)
-            for field in fields(self)
-            if field.name not in _MANAGED_FIELDS
+        return (
+            self.__class__ == other.__class__
+            and self.spec == other.spec
+            and self.hash() == other.hash()
         )
 
 
