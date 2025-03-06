@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.2.0...v0.2.1) (2025-03-06)
+
+
+### Bug Fixes
+
+* fix function args of once decorator ([74dde47](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/74dde475b81cc1f9d5bd34ed9a714f6782fc0263))
+
 ## [0.2.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.1.1...v0.2.0) (2025-03-06)
 
 
