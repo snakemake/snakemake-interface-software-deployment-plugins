@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.2.2...v0.2.3) (2025-03-06)
+
+
+### Bug Fixes
+
+* expose shell executable setting ([ca35ce5](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/ca35ce5656a6086b3f4ff1c188fb4b6d1cc77163))
+
 ## [0.2.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.2.1...v0.2.2) (2025-03-06)
 
 
