@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.2.3...v0.3.0) (2025-03-06)
+
+
+### Features
+
+* add method to modify source paths in EnvSpecBase ([d946bb4](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/d946bb4534e09ebba25c385cd8b599736492e0c1))
+* Env and EnvSpec comparison and hashing ([37c334f](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/37c334f6080b5ca907d6a3e05225d2f48239df71))
+* introduce common settings ([8de4dec](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/8de4dec75f654eba05f7916e442c107253393069))
+
+
+### Bug Fixes
+
+* check provides validity ([8b39604](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/8b39604f5d77070b909819af6e1b5af7f21980dc))
+* test suite abstract method ([9d278f9](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/9d278f928fb40aaf4090359af2d8f84d22391a74))
+
 ## [0.2.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.2.2...v0.2.3) (2025-03-06)
 
 
