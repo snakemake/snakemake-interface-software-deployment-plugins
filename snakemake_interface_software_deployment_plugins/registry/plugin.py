@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Optional, Type
 from snakemake_interface_software_deployment_plugins import EnvBase, EnvSpecBase
 from snakemake_interface_software_deployment_plugins.settings import (
+    CommonSettings,
     SoftwareDeploymentSettingsBase,
 )
 import snakemake_interface_software_deployment_plugins._common as common
@@ -16,6 +17,7 @@ from snakemake_interface_common.plugin_registry.plugin import PluginBase
 
 @dataclass
 class Plugin(PluginBase):
+    common_settings: CommonSettings
     _software_deployment_settings_cls: Optional[Type[SoftwareDeploymentSettingsBase]]
     _env_cls: Type[EnvBase]
     _env_spec_cls: Type[EnvSpecBase]

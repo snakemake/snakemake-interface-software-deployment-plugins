@@ -6,6 +6,7 @@ __license__ = "MIT"
 import types
 from typing import Mapping
 from snakemake_interface_software_deployment_plugins.settings import (
+    CommonSettings,
     SoftwareDeploymentSettingsBase,
 )
 
@@ -30,6 +31,7 @@ class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
         """Load a plugin by name."""
         return Plugin(
             _name=name,
+            common_settings=module.common_settings,
             _software_deployment_settings_cls=getattr(
                 module, "SoftwareDeploymentSettings", None
             ),
@@ -38,6 +40,11 @@ class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
 
     def expected_attributes(self) -> Mapping[str, AttributeType]:
         return {
+            "common_settings": AttributeType(
+                cls=CommonSettings,
+                mode=AttributeMode.REQUIRED,
+                kind=AttributeKind.OBJECT,
+            ),
             "SoftwareDeploymentSettings": AttributeType(
                 cls=SoftwareDeploymentSettingsBase,
                 mode=AttributeMode.OPTIONAL,
