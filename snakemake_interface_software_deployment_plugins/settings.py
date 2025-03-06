@@ -22,7 +22,7 @@ class CommonSettings:
     """Common settings for software deployment plugins.
 
     This class is used to define common settings for software deployment plugins.
-    
+
     Attributes
     ----------
     provides : str
@@ -35,6 +35,7 @@ class CommonSettings:
         Snakemake will ensure that the user only activates one plugin per provided
         kind.
     """
+
     provides: str
 
     def __post_init__(self):

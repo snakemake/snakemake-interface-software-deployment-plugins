@@ -49,8 +49,7 @@ class TestSoftwareDeploymentBase(ABC):
     @abstractmethod
     def get_software_deployment_provider_settings(
         self,
-    ) -> Optional[SoftwareDeploymentSettingsBase]:
-        ...
+    ) -> Optional[SoftwareDeploymentSettingsBase]: ...
 
     def test_shellcmd(self, tmp_path):
         env = self._get_env(tmp_path)
