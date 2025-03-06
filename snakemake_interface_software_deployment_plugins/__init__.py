@@ -54,7 +54,8 @@ class EnvBase:
         """Do stuff after object initialization."""
         pass
 
-    def once(self, func):
+    @staticmethod
+    def once(func):
         """Decorator to cache the result of a method call that shall be only
         executed once per combination of plugin and "within" environment.
         """
