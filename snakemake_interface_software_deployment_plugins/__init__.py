@@ -61,10 +61,14 @@ class EnvSpecBase(ABC):
             setattr(self_or_copied, attr, modify_func(getattr(self_or_copied, attr)))
 
         if self_or_copied.within is not None:
-            self_or_copied.within = self_or_copied.within.modify_source_paths(modify_func)
+            self_or_copied.within = self_or_copied.within.modify_source_paths(
+                modify_func
+            )
 
         if self_or_copied.fallback is not None:
-            self_or_copied.fallback = self_or_copied.fallback.modify_source_paths(modify_func)
+            self_or_copied.fallback = self_or_copied.fallback.modify_source_paths(
+                modify_func
+            )
         return self_or_copied
 
     def __or__(self, other: "EnvSpecBase") -> "EnvSpecBase":
@@ -81,9 +85,7 @@ class EnvSpecBase(ABC):
 
     def __hash__(self) -> int:
         return hash(
-            tuple(
-                getattr(self, attr) for attr in self.managed_identity_attributes()
-            )
+            tuple(getattr(self, attr) for attr in self.managed_identity_attributes())
         )
 
     def __eq__(self, other) -> bool:
