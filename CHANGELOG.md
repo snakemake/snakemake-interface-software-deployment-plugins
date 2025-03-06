@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.2.1...v0.2.2) (2025-03-06)
+
+
+### Bug Fixes
+
+* fix EnvBase.once decorator ([ea468eb](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/ea468eb37f79ff177a37d2077d9c9e171a832945))
+
 ## [0.2.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.2.0...v0.2.1) (2025-03-06)
 
 
