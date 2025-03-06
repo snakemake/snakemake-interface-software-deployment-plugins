@@ -36,3 +36,10 @@ class CommonSettings:
         kind.
     """
     provides: str
+
+    def __post_init__(self):
+        if not self.provides.isidentifier():
+            raise ValueError(
+                "CommonSettings.provides must be a valid Python identifier, but "
+                f"is {self.provides}."
+            )
