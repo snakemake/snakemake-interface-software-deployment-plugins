@@ -8,7 +8,7 @@ from copy import copy
 from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Iterable, Optional, Tuple, Type
+from typing import Any, ClassVar, Dict, Iterable, Optional, Self, Tuple, Type
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -29,10 +29,43 @@ class EnvSpecBase(ABC):
 
     @abstractmethod
     def identity_attributes(self) -> Iterable[str]:
-        """Return the attributes of the subclass that uniquely identify the
+        """Yield the attributes of the subclass that uniquely identify the
         environment spec. These are used for hashing and equality comparison.
         """
         ...
+
+    @abstractmethod
+    def source_path_attributes(self) -> Iterable[str]:
+        """Return iterable of attributes of the subclass that represent paths that are
+        supposed to be interpreted as being relative to the defining rule.
+
+        For example, this would be attributes pointing to conda environment files.
+        """
+        ...
+
+    def has_source_paths(self) -> bool:
+        if any(self.source_path_attributes()):
+            return True
+        if self.within is not None and self.within.has_source_paths():
+            return True
+        if self.fallback is not None and self.fallback.has_source_paths():
+            return True
+        return False
+
+    def modify_source_paths(self, modify_func) -> Self:
+        if self.has_source_paths():
+            self_or_copied = copy(self)
+        else:
+            return self
+        for attr in self_or_copied.source_path_attributes():
+            setattr(self_or_copied, attr, modify_func(getattr(self_or_copied, attr)))
+
+        if self_or_copied.within is not None:
+            self_or_copied.within = self_or_copied.within.modify_source_paths(modify_func)
+
+        if self_or_copied.fallback is not None:
+            self_or_copied.fallback = self_or_copied.fallback.modify_source_paths(modify_func)
+        return self_or_copied
 
     def __or__(self, other: "EnvSpecBase") -> "EnvSpecBase":
         copied = copy(self)
@@ -47,13 +80,11 @@ class EnvSpecBase(ABC):
         yield "fallback"
 
     def __hash__(self) -> int:
-        if self._obj_hash is None:
-            self._obj_hash = hash(
-                tuple(
-                    getattr(self, attr) for attr in self.managed_identity_attributes()
-                )
+        return hash(
+            tuple(
+                getattr(self, attr) for attr in self.managed_identity_attributes()
             )
-        return self._obj_hash
+        )
 
     def __eq__(self, other) -> bool:
         return self.__class__ == other.__class__ and all(
