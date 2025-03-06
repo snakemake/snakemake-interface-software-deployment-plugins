@@ -4,11 +4,12 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 from abc import ABC, abstractmethod
+from copy import copy
 from dataclasses import dataclass, field, fields
 import hashlib
 from pathlib import Path
 import sys
-from typing import Optional
+from typing import Any, ClassVar, Dict, Optional, Tuple, Type
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -27,10 +28,16 @@ _MANAGED_FIELDS = {
 @dataclass
 class EnvSpecBase(ABC):
     within: Optional["EnvSpecBase"]
+    fallback: Optional["EnvSpecBase"]
 
     @classmethod
     def env_cls(cls):
         return sys.modules[__name__].EnvBase
+
+    def __or__(self, other: "EnvSpecBase") -> "EnvSpecBase":
+        copied = copy(self)
+        copied.fallback = other
+        return copied
 
 
 @dataclass
@@ -41,10 +48,24 @@ class EnvBase:
     _managed_hash_store: Optional[str] = field(init=False, default=None)
     _managed_deployment_hash_store: Optional[str] = field(init=False, default=None)
     _obj_hash: Optional[int] = field(init=False, default=None)
+    _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
 
     def __post_init__(self) -> None:  # noqa B027
         """Do stuff after object initialization."""
         pass
+
+    def once(self, func):
+        """Decorator to cache the result of a method call that shall be only
+        executed once per combination of plugin and "within" environment.
+        """
+        def wrapper(self, *args, **kwargs):
+            key = (self.__class__, self.within)
+            if key in self._cache:
+                return self._cache[key]
+            value = func(*args, **kwargs)
+            self._cache[key] = value
+            return value
+        return wrapper
 
     @abstractmethod
     def decorate_shellcmd(self, cmd: str) -> str:
