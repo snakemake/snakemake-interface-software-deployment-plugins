@@ -58,6 +58,7 @@ class EnvBase:
         """Decorator to cache the result of a method call that shall be only
         executed once per combination of plugin and "within" environment.
         """
+
         def wrapper(self, *args, **kwargs):
             key = (self.__class__, self.within)
             if key in self._cache:
@@ -65,6 +66,7 @@ class EnvBase:
             value = func(*args, **kwargs)
             self._cache[key] = value
             return value
+
         return wrapper
 
     @abstractmethod
