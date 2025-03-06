@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.1.1...v0.2.0) (2025-03-06)
+
+
+### Features
+
+* cache decorator and "or"/fallback support for EnvSpecBase ([ee465b0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/ee465b05dafe85d459ba3d16dbb51311663deb5c))
+
 ## [0.1.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.1.0...v0.1.1) (2025-03-05)
 
 
