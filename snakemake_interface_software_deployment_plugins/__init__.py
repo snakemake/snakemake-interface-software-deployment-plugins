@@ -45,6 +45,7 @@ class EnvBase:
     spec: EnvSpecBase
     within: Optional["EnvBase"]
     settings: Optional[SoftwareDeploymentSettingsBase]
+    shell_executable: str
     _managed_hash_store: Optional[str] = field(init=False, default=None)
     _managed_deployment_hash_store: Optional[str] = field(init=False, default=None)
     _obj_hash: Optional[int] = field(init=False, default=None)
@@ -93,7 +94,7 @@ class EnvBase:
         """
         if self.within is not None:
             cmd = self.within.managed_decorate_shellcmd(cmd)
-        return sp.run(cmd, shell=True, **kwargs)
+        return sp.run(cmd, shell=True, executable=self.shell_executable, **kwargs)
 
     def managed_decorate_shellcmd(self, cmd: str) -> str:
         cmd = self.decorate_shellcmd(cmd)

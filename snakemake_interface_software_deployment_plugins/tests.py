@@ -20,6 +20,7 @@ _TEST_SDM_NAME = "test-sdm"
 
 class TestSoftwareDeploymentBase(ABC):
     __test__ = False
+    shell_executable = "bash"
 
     @abstractmethod
     def get_env_spec(self) -> EnvSpecBase:
@@ -59,13 +60,18 @@ class TestSoftwareDeploymentBase(ABC):
         cmd = self.get_test_cmd()
         decorated_cmd = env.managed_decorate_shellcmd(cmd)
         assert cmd != decorated_cmd
-        assert sp.run(decorated_cmd, shell=True, executable="bash").returncode == 0
+        assert (
+            sp.run(
+                decorated_cmd, shell=True, executable=self.shell_executable
+            ).returncode
+            == 0
+        )
 
     def test_deploy(self, tmp_path):
         env = self._get_env(tmp_path)
         self._deploy(env, tmp_path)
         cmd = env.managed_decorate_shellcmd(self.get_test_cmd())
-        assert sp.run(cmd, shell=True, executable="bash").returncode == 0
+        assert sp.run(cmd, shell=True, executable=self.shell_executable).returncode == 0
 
     def test_archive(self, tmp_path):
         env = self._get_env(tmp_path)
@@ -85,7 +91,9 @@ class TestSoftwareDeploymentBase(ABC):
             args["deployment_prefix"] = tmp_path / "deployments"
         if issubclass(env_cls, ArchiveableEnvBase):
             args["archive_prefix"] = tmp_path / "archives"
-        return env_cls(spec=spec, within=None, **args)
+        return env_cls(
+            spec=spec, within=None, shell_executable=self.shell_executable, **args
+        )
 
     def _deploy(self, env: DeployableEnvBase, tmp_path):
         if not isinstance(env, DeployableEnvBase):
