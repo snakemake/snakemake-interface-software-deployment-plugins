@@ -64,7 +64,7 @@ class EnvBase:
             key = (self.__class__, self.within)
             if key in self._cache:
                 return self._cache[key]
-            value = func(*args, **kwargs)
+            value = func(self, *args, **kwargs)
             self._cache[key] = value
             return value
 
