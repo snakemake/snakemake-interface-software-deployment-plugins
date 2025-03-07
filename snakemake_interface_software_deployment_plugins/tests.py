@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Optional, Type
 import subprocess as sp
 
@@ -82,6 +83,31 @@ class TestSoftwareDeploymentBase(ABC):
 
         env.archive()
         assert any((tmp_path / "{_TEST_SDM_NAME}-archive").iterdir())
+
+    def test_report_software(self):
+        spec = self.get_env_spec()
+        rep = spec.report_software()
+        assert (
+            rep is None
+            or (isinstance(rep, dict) and all(isinstance(k, str) for k in rep))
+            and all(v is None or isinstance(v, str) for v in rep.values())
+        )
+
+    def test_identity_attributes(self):
+        spec = self.get_env_spec()
+        assert all(
+            isinstance(attr, str) and hasattr(spec, attr)
+            for attr in spec.identity_attributes()
+        )
+
+    def test_source_path_attributes(self):
+        spec = self.get_env_spec()
+        assert all(
+            isinstance(attr, str)
+            and hasattr(spec, attr)
+            and isinstance(getattr(spec, attr), (Path, str))
+            for attr in spec.source_path_attributes()
+        )
 
     def _get_env(self, tmp_path) -> EnvBase:
         env_cls = self.get_env_cls()
