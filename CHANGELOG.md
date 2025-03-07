@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.4.0...v0.5.0) (2025-03-07)
+
+
+### Features
+
+* make deploy async ([#11](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/11)) ([217b965](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/217b965e8c07f1ae05aa8657c8914b8efdc6c073))
+
 ## [0.4.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.3.0...v0.4.0) (2025-03-07)
 
 
