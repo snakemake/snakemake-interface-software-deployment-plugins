@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import asyncio
 from pathlib import Path
 from typing import Optional, Type
 import subprocess as sp
@@ -122,5 +123,5 @@ class TestSoftwareDeploymentBase(ABC):
         if not isinstance(env, DeployableEnvBase):
             pytest.skip("Environment is not deployable.")
 
-        env.deploy()
+        asyncio.run(env.deploy())
         assert any((tmp_path / _TEST_SDM_NAME).iterdir())

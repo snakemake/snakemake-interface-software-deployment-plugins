@@ -209,7 +209,7 @@ class DeployableEnvBase(EnvBase):
     _deployment_prefix: Optional[Path] = None
 
     @abstractmethod
-    def deploy(self) -> None:
+    async def deploy(self) -> None:
         """Deploy the environment to self.deployment_path.
 
         When issuing shell commands, the environment should use
