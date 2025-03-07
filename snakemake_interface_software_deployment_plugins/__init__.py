@@ -271,11 +271,6 @@ class ArchiveableEnvBase(EnvBase):
         """
         ...
 
-    @abstractmethod
-    def deploy_from_archive(self) -> None:
-        """Deploy the environment from an archive."""
-        ...
-
     @property
     def archive_path(self) -> Path:
         return self.archive_prefix / self.hash()
