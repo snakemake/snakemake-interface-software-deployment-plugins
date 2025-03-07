@@ -153,7 +153,7 @@ class EnvBase:
         """Report the software contained in the environment. This should be a list of
         snakemake_interface_software_deployment_plugins.SoftwareReport data class.
         Use SoftwareReport.is_secondary = True if the software is just some
-        less important technical dependency. This allows Snakemake's report to 
+        less important technical dependency. This allows Snakemake's report to
         hide those for clarity. In case of containers, it is also valid to
         return the container URI as a "software".
         Return an empty tuple () if no software can be reported.
