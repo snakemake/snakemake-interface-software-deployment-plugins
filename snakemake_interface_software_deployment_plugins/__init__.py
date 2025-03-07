@@ -8,7 +8,7 @@ from copy import copy
 from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Iterable, Optional, Self, Tuple, Type
+from typing import Any, ClassVar, Dict, Iterable, Optional, Self, Tuple, Type, Union
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -23,8 +23,15 @@ class SoftwareReport:
     is_secondary: bool = False
 
 
+@dataclass
+class EnvSpecSourceFile:
+    path_or_uri: Union[str, Path]
+    cached: Optional[Path] = field(init=False, repr=False, default=None)
+
+
 class EnvSpecBase(ABC):
-    def __init__(self):
+    def technical_init(self):
+        """This has to be called by Snakemake upon initialization"""
         self.within: Optional["EnvSpecBase"] = None
         self.fallback: Optional["EnvSpecBase"] = None
         self.kind: str = self.__class__.__module__.common_settings.provides
@@ -66,11 +73,10 @@ class EnvSpecBase(ABC):
             self_or_copied = copy(self)
         else:
             return self
-        for attr in self_or_copied.source_path_attributes():
-            for attr_name in self_or_copied.source_path_attributes():
-                current_value = getattr(self_or_copied, attr_name)
-                if current_value is not None:
-                    setattr(self_or_copied, attr_name, modify_func(current_value))
+        for attr_name in self_or_copied.source_path_attributes():
+            current_value = getattr(self_or_copied, attr_name)
+            if current_value is not None:
+                setattr(self_or_copied, attr_name, modify_func(current_value))
 
         if self_or_copied.within is not None:
             self_or_copied.within = self_or_copied.within.modify_source_paths(
