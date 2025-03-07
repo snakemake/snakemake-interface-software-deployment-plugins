@@ -51,7 +51,9 @@ class EnvSpecBase(ABC):
         ...
 
     def has_source_paths(self) -> bool:
-        if any(self.source_path_attributes()):
+        if any(
+            getattr(self, attr) is not None for attr in self.source_path_attributes()
+        ):
             return True
         if self.within is not None and self.within.has_source_paths():
             return True
@@ -65,7 +67,10 @@ class EnvSpecBase(ABC):
         else:
             return self
         for attr in self_or_copied.source_path_attributes():
-            setattr(self_or_copied, attr, modify_func(getattr(self_or_copied, attr)))
+            if attr is not None:
+                setattr(
+                    self_or_copied, attr, modify_func(getattr(self_or_copied, attr))
+                )
 
         if self_or_copied.within is not None:
             self_or_copied.within = self_or_copied.within.modify_source_paths(
