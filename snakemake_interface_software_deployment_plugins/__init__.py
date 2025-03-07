@@ -6,14 +6,22 @@ __license__ = "MIT"
 from abc import ABC, abstractmethod
 from copy import copy
 from dataclasses import dataclass, field
+from enum import Enum
 import hashlib
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Iterable, Optional, Self, Tuple, Type
+from typing import Any, ClassVar, Dict, Iterable, List, Optional, Self, Tuple, Type
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
     SoftwareDeploymentSettingsBase,
 )
+
+
+@dataclass
+class SoftwareReport:
+    name: str
+    version: Optional[str] = None
+    is_secondary: bool = False
 
 
 class EnvSpecBase(ABC):
@@ -41,16 +49,6 @@ class EnvSpecBase(ABC):
 
         For example, this would be attributes pointing to conda environment files.
         """
-        ...
-
-    @abstractmethod
-    def report_software(self) -> Optional[Dict[str, Optional[str]]]:
-        """Return a dictionary of software or container names and versions that are
-        defined by the environment spec.
-
-        The keys are the software/container/env names, the values are the versions.
-        If the version is not known, the value should be None. If the spec does
-        not offer this information return None."""
         ...
 
     def has_source_paths(self) -> bool:
@@ -145,9 +143,21 @@ class EnvBase:
 
     @abstractmethod
     def record_hash(self, hash_object) -> None:
-        """Update given hash object such that it changes whenever the environment
-        specified via self.spec could potentially contain a different set of
-        software (in terms of versions or packages).
+        """Update given hash object (using hash_object.update()) such that it changes
+        whenever the environment specified via self.spec could potentially contain a
+        different set of software (in terms of versions or packages).
+        """
+        ...
+
+    @abstractmethod
+    def report_software(self) -> List[SoftwareReport]:
+        """Report the software contained in the environment. This should be a list of
+        snakemake_interface_software_deployment_plugins.SoftwareReport data class.
+        Use SoftwareReport.is_secondary = True if the software is just some
+        less important technical dependency. This allows Snakemake's report to 
+        hide those for clarity. In case of containers, it is also valid to
+        return the container URI as a "software".
+        Return an empty list if no software can be reported.
         """
         ...
 
