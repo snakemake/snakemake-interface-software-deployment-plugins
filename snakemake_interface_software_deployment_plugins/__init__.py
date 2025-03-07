@@ -67,10 +67,10 @@ class EnvSpecBase(ABC):
         else:
             return self
         for attr in self_or_copied.source_path_attributes():
-            if attr is not None:
-                setattr(
-                    self_or_copied, attr, modify_func(getattr(self_or_copied, attr))
-                )
+            for attr_name in self_or_copied.source_path_attributes():
+                current_value = getattr(self_or_copied, attr_name)
+                if current_value is not None:
+                    setattr(self_or_copied, attr_name, modify_func(current_value))
 
         if self_or_copied.within is not None:
             self_or_copied.within = self_or_copied.within.modify_source_paths(
