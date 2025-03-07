@@ -30,7 +30,7 @@ class EnvSpecSourceFile:
 
 
 class EnvSpecBase(ABC):
-    def __init__(self):
+    def technical_init(self):
         self.within: Optional["EnvSpecBase"] = None
         self.fallback: Optional["EnvSpecBase"] = None
         self.kind: str = self.__class__.__module__.common_settings.provides
