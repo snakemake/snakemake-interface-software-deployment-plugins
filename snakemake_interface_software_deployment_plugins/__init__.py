@@ -8,7 +8,7 @@ from copy import copy
 from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Iterable, Optional, Self, Tuple, Type
+from typing import Any, ClassVar, Dict, Iterable, Optional, Self, Tuple, Type, Union
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -21,6 +21,12 @@ class SoftwareReport:
     name: str
     version: Optional[str] = None
     is_secondary: bool = False
+
+
+@dataclass
+class EnvSpecSourceFile:
+    path_or_uri: Union[str, Path]
+    cached: Optional[Path] = field(init=False, repr=False, default=None)
 
 
 class EnvSpecBase(ABC):
