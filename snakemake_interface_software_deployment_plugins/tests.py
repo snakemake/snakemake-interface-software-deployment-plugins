@@ -11,6 +11,7 @@ from snakemake_interface_software_deployment_plugins import (
     DeployableEnvBase,
     EnvBase,
     EnvSpecBase,
+    EnvSpecSourceFile,
     SoftwareReport,
 )
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -103,7 +104,7 @@ class TestSoftwareDeploymentBase(ABC):
         assert all(
             isinstance(attr, str)
             and hasattr(spec, attr)
-            and isinstance(getattr(spec, attr), (Path, str))
+            and isinstance(getattr(spec, attr), EnvSpecSourceFile)
             for attr in spec.source_path_attributes()
         )
 

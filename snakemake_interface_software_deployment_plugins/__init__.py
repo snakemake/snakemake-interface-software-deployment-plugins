@@ -8,7 +8,7 @@ from copy import copy
 from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Iterable, Optional, Self, Tuple, Type, Union
+from typing import Any, Dict, Iterable, Optional, Self, Tuple, Type, Union
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -42,14 +42,16 @@ class EnvSpecBase(ABC):
         return cls.__module__.EnvBase
 
     @abstractmethod
-    def identity_attributes(self) -> Iterable[str]:
+    @classmethod
+    def identity_attributes(cls) -> Iterable[str]:
         """Yield the attributes of the subclass that uniquely identify the
         environment spec. These are used for hashing and equality comparison.
         """
         ...
 
     @abstractmethod
-    def source_path_attributes(self) -> Iterable[str]:
+    @classmethod
+    def source_path_attributes(cls) -> Iterable[str]:
         """Return iterable of attributes of the subclass that represent paths that are
         supposed to be interpreted as being relative to the defining rule.
 
@@ -95,8 +97,9 @@ class EnvSpecBase(ABC):
         copied._obj_hash = None
         return copied
 
-    def managed_identity_attributes(self) -> Iterable[str]:
-        yield from self.identity_attributes()
+    @classmethod
+    def managed_identity_attributes(cls) -> Iterable[str]:
+        yield from cls.identity_attributes()
         yield "kind"
         yield "within"
         yield "fallback"
@@ -113,18 +116,27 @@ class EnvSpecBase(ABC):
         )
 
 
-@dataclass
-class EnvBase:
-    spec: EnvSpecBase
-    within: Optional["EnvBase"]
-    settings: Optional[SoftwareDeploymentSettingsBase]
-    shell_executable: str
-    _managed_hash_store: Optional[str] = field(init=False, default=None)
-    _managed_deployment_hash_store: Optional[str] = field(init=False, default=None)
-    _obj_hash: Optional[int] = field(init=False, default=None)
-    _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
-    _deployment_prefix: Optional[Path] = None
-    _archive_prefix: Optional[Path] = None
+class EnvBase(ABC):
+    _cache: Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any] = {}
+
+    def __init__(
+        self,
+        spec: EnvSpecBase,
+        within: Optional["EnvBase"],
+        settings: Optional[SoftwareDeploymentSettingsBase],
+        shell_executable: str,
+        deployment_prefix: Optional[Path] = None,
+        archive_prefix: Optional[Path] = None,
+    ):
+        self.spec: EnvSpecBase = spec
+        self.within: Optional["EnvBase"] = within
+        self.settings: Optional[SoftwareDeploymentSettingsBase] = settings
+        self.shell_executable: str = shell_executable
+        self._managed_hash_store: Optional[str] = None
+        self._managed_deployment_hash_store: Optional[str] = None
+        self._obj_hash: Optional[int] = None
+        self._deployment_prefix: Optional[Path] = deployment_prefix
+        self._archive_prefix: Optional[Path] = archive_prefix
 
     def __post_init__(self) -> None:  # noqa B027
         """Do stuff after object initialization."""
@@ -217,7 +229,7 @@ class EnvBase:
         )
 
 
-class DeployableEnvBase(EnvBase):
+class DeployableEnvBase(ABC):
     @abstractmethod
     async def deploy(self) -> None:
         """Deploy the environment to self.deployment_path.
@@ -257,7 +269,7 @@ class DeployableEnvBase(EnvBase):
         return self.provider.deployment_prefix / self.deployment_hash()
 
 
-class ArchiveableEnvBase(EnvBase):
+class ArchiveableEnvBase(ABC):
     @abstractmethod
     async def archive(self) -> None:
         """Archive the environment to self.archive_path.
