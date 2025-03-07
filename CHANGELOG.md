@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.3.0...v0.4.0) (2025-03-07)
+
+
+### Features
+
+* add abstract method for reporting software ([#9](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/9)) ([f7b6d6c](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/f7b6d6c190be74cc0e036f3c02d8cdee79abdfb4))
+
 ## [0.3.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.2.3...v0.3.0) (2025-03-06)
 
 
