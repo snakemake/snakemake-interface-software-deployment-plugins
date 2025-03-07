@@ -10,6 +10,7 @@ from snakemake_interface_software_deployment_plugins import (
     DeployableEnvBase,
     EnvBase,
     EnvSpecBase,
+    SoftwareReport,
 )
 from snakemake_interface_software_deployment_plugins.settings import (
     SoftwareDeploymentSettingsBase,
@@ -84,14 +85,10 @@ class TestSoftwareDeploymentBase(ABC):
         env.archive()
         assert any((tmp_path / "{_TEST_SDM_NAME}-archive").iterdir())
 
-    def test_report_software(self):
-        spec = self.get_env_spec()
-        rep = spec.report_software()
-        assert (
-            rep is None
-            or (isinstance(rep, dict) and all(isinstance(k, str) for k in rep))
-            and all(v is None or isinstance(v, str) for v in rep.values())
-        )
+    def test_report_software(self, tmp_path):
+        env = self._get_env(tmp_path)
+        rep = env.report_software()
+        assert all(isinstance(s, SoftwareReport) for s in rep)
 
     def test_identity_attributes(self):
         spec = self.get_env_spec()
