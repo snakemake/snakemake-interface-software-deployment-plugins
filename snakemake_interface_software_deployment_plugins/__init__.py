@@ -6,10 +6,9 @@ __license__ = "MIT"
 from abc import ABC, abstractmethod
 from copy import copy
 from dataclasses import dataclass, field
-from enum import Enum
 import hashlib
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Iterable, List, Optional, Self, Tuple, Type
+from typing import Any, ClassVar, Dict, Iterable, Optional, Self, Tuple, Type
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -150,14 +149,14 @@ class EnvBase:
         ...
 
     @abstractmethod
-    def report_software(self) -> List[SoftwareReport]:
+    def report_software(self) -> Iterable[SoftwareReport]:
         """Report the software contained in the environment. This should be a list of
         snakemake_interface_software_deployment_plugins.SoftwareReport data class.
         Use SoftwareReport.is_secondary = True if the software is just some
         less important technical dependency. This allows Snakemake's report to 
         hide those for clarity. In case of containers, it is also valid to
         return the container URI as a "software".
-        Return an empty list if no software can be reported.
+        Return an empty tuple () if no software can be reported.
         """
         ...
 
