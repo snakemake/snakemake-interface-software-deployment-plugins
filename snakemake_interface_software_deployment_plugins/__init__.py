@@ -251,7 +251,7 @@ class ArchiveableEnvBase(EnvBase):
     archive_prefix: Optional[Path] = None
 
     @abstractmethod
-    def archive(self) -> None:
+    async def archive(self) -> None:
         """Archive the environment to self.archive_path.
 
         When issuing shell commands, the environment should use

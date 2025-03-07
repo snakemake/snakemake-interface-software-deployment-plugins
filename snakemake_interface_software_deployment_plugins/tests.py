@@ -83,7 +83,7 @@ class TestSoftwareDeploymentBase(ABC):
 
         self._deploy(env, tmp_path)
 
-        env.archive()
+        asyncio.run(env.archive())
         assert any((tmp_path / "{_TEST_SDM_NAME}-archive").iterdir())
 
     def test_report_software(self, tmp_path):
