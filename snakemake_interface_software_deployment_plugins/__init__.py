@@ -31,6 +31,7 @@ class EnvSpecSourceFile:
 
 class EnvSpecBase(ABC):
     def technical_init(self):
+        """This has to be called by Snakemake upon initialization"""
         self.within: Optional["EnvSpecBase"] = None
         self.fallback: Optional["EnvSpecBase"] = None
         self.kind: str = self.__class__.__module__.common_settings.provides
