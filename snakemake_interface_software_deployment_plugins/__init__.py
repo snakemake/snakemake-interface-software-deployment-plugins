@@ -43,6 +43,16 @@ class EnvSpecBase(ABC):
         """
         ...
 
+    @abstractmethod
+    def report_software(self) -> Optional[Dict[str, Optional[str]]]:
+        """Return a dictionary of software or container names and versions that are
+        defined by the environment spec.
+        
+        The keys are the software/container/env names, the values are the versions.
+        If the version is not known, the value should be None. If the spec does 
+        not offer this information return None."""
+        ...
+
     def has_source_paths(self) -> bool:
         if any(self.source_path_attributes()):
             return True
