@@ -123,6 +123,8 @@ class EnvBase:
     _managed_deployment_hash_store: Optional[str] = field(init=False, default=None)
     _obj_hash: Optional[int] = field(init=False, default=None)
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
+    _deployment_prefix: Optional[Path] = None
+    _archive_prefix: Optional[Path] = None
 
     def __post_init__(self) -> None:  # noqa B027
         """Do stuff after object initialization."""
@@ -215,10 +217,7 @@ class EnvBase:
         )
 
 
-@dataclass
 class DeployableEnvBase(EnvBase):
-    _deployment_prefix: Optional[Path] = None
-
     @abstractmethod
     async def deploy(self) -> None:
         """Deploy the environment to self.deployment_path.
@@ -259,8 +258,6 @@ class DeployableEnvBase(EnvBase):
 
 
 class ArchiveableEnvBase(EnvBase):
-    archive_prefix: Optional[Path] = None
-
     @abstractmethod
     async def archive(self) -> None:
         """Archive the environment to self.archive_path.
@@ -273,4 +270,4 @@ class ArchiveableEnvBase(EnvBase):
 
     @property
     def archive_path(self) -> Path:
-        return self.archive_prefix / self.hash()
+        return self._archive_prefix / self.hash()
