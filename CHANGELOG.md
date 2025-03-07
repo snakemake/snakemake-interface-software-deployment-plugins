@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.5.0...v0.6.0) (2025-03-07)
+
+
+### Features
+
+* introduce EnvSpecSourceFile as a container data class for paths or uris mentioned in the EnvSpec that shall be cached and resolved by Snakemake's source caching mechanism ([#13](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/13)) ([d359609](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/d359609bf2dd01a1b29814c76eb7276d657c2b27))
+
 ## [0.5.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.4.0...v0.5.0) (2025-03-07)
 
 
