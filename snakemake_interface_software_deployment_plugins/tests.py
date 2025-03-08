@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import asyncio
+from copy import deepcopy
 from typing import Optional, Type
 import subprocess as sp
 
@@ -84,7 +85,7 @@ class TestSoftwareDeploymentBase(ABC):
         self._deploy(env, tmp_path)
 
         asyncio.run(env.archive())
-        assert any((tmp_path / "{_TEST_SDM_NAME}-archive").iterdir())
+        assert any((tmp_path / "archives").iterdir())
 
     def test_report_software(self, tmp_path):
         env = self._get_env(tmp_path)
@@ -103,13 +104,20 @@ class TestSoftwareDeploymentBase(ABC):
         assert all(
             isinstance(attr, str)
             and hasattr(spec, attr)
-            and isinstance(getattr(spec, attr), EnvSpecSourceFile)
+            and isinstance(getattr(spec, attr), (EnvSpecSourceFile, None))
             for attr in spec.source_path_attributes()
-        )
+        ), "bug in plugin: all source path attributes must be of type EnvSpecSourceFile"
+
+    def _get_cached_env_spec(self):
+        spec = deepcopy(self.get_env_spec())
+        for attr in spec.source_path_attributes():
+            source_file = getattr(spec, attr)
+            source_file.cached = source_file.path_or_uri
+        return spec
 
     def _get_env(self, tmp_path) -> EnvBase:
         env_cls = self.get_env_cls()
-        spec = self.get_env_spec()
+        spec = self._get_cached_env_spec()
         args = {"settings": self.get_software_deployment_provider_settings()}
         if issubclass(env_cls, DeployableEnvBase):
             args["deployment_prefix"] = tmp_path / "deployments"
@@ -124,4 +132,4 @@ class TestSoftwareDeploymentBase(ABC):
             pytest.skip("Environment is not deployable.")
 
         asyncio.run(env.deploy())
-        assert any((tmp_path / _TEST_SDM_NAME).iterdir())
+        assert any((tmp_path / "deployments").iterdir())

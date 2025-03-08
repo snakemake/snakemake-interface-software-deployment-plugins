@@ -41,16 +41,16 @@ class EnvSpecBase(ABC):
     def env_cls(cls):
         return cls.__module__.EnvBase
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def identity_attributes(cls) -> Iterable[str]:
         """Yield the attributes of the subclass that uniquely identify the
         environment spec. These are used for hashing and equality comparison.
         """
         ...
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def source_path_attributes(cls) -> Iterable[str]:
         """Return iterable of attributes of the subclass that represent paths that are
         supposed to be interpreted as being relative to the defining rule.
@@ -137,6 +137,7 @@ class EnvBase(ABC):
         self._obj_hash: Optional[int] = None
         self._deployment_prefix: Optional[Path] = deployment_prefix
         self._archive_prefix: Optional[Path] = archive_prefix
+        self.__post_init__()
 
     def __post_init__(self) -> None:  # noqa B027
         """Do stuff after object initialization."""
@@ -231,16 +232,19 @@ class EnvBase(ABC):
 
 class DeployableEnvBase(ABC):
     @abstractmethod
+    def is_deployment_path_portable(self) -> bool:
+        ...
+
+    @abstractmethod
     async def deploy(self) -> None:
         """Deploy the environment to self.deployment_path.
 
         When issuing shell commands, the environment should use
-        self.provider.run(cmd: str) in order to ensure that it runs within eventual
+        self.run_cmd(cmd: str) in order to ensure that it runs within eventual
         parent environments (e.g. a container or an env module).
         """
         ...
 
-    @abstractmethod
     def record_deployment_hash(self, hash_object) -> None:
         """Update given hash such that it changes whenever the environment
         needs to be redeployed, e.g. because its content has changed or the
@@ -248,7 +252,9 @@ class DeployableEnvBase(ABC):
         deployment is senstivive to the path (e.g. in case of conda, which patches
         the RPATH in binaries).
         """
-        ...
+        self.record_hash(hash_object)
+        if not self.is_deployment_path_portable():
+            hash_object.update(str(self._deployment_prefix).encode())
 
     @abstractmethod
     def remove(self) -> None:
@@ -266,7 +272,7 @@ class DeployableEnvBase(ABC):
 
     @property
     def deployment_path(self) -> Path:
-        return self.provider.deployment_prefix / self.deployment_hash()
+        return self._deployment_prefix / self.deployment_hash()
 
 
 class ArchiveableEnvBase(ABC):
@@ -275,7 +281,7 @@ class ArchiveableEnvBase(ABC):
         """Archive the environment to self.archive_path.
 
         When issuing shell commands, the environment should use
-        self.provider.run(cmd: str) in order to ensure that it runs within eventual
+        self.run_cmd(cmd: str) in order to ensure that it runs within eventual
         parent environments (e.g. a container or an env module).
         """
         ...
