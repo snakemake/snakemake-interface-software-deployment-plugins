@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.6.0...v0.6.1) (2025-03-08)
+
+
+### Bug Fixes
+
+* change methods into classmethods ([358695c](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/358695ce97f036b5e44d0ce6f0a15c7c9cce832f))
+* remove deploy_from_archive ([8831501](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/8831501a1ec3286bd7342ab34a523f3944bc2153))
+
 ## [0.6.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.5.0...v0.6.0) (2025-03-07)
 
 
