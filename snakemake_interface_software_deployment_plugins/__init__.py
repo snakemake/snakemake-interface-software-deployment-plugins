@@ -232,8 +232,7 @@ class EnvBase(ABC):
 
 class DeployableEnvBase(ABC):
     @abstractmethod
-    def is_deployment_path_portable(self) -> bool:
-        ...
+    def is_deployment_path_portable(self) -> bool: ...
 
     @abstractmethod
     async def deploy(self) -> None:
