@@ -125,6 +125,7 @@ class EnvBase(ABC):
         within: Optional["EnvBase"],
         settings: Optional[SoftwareDeploymentSettingsBase],
         shell_executable: str,
+        tempdir: Path,
         deployment_prefix: Optional[Path] = None,
         archive_prefix: Optional[Path] = None,
     ):
@@ -132,6 +133,7 @@ class EnvBase(ABC):
         self.within: Optional["EnvBase"] = within
         self.settings: Optional[SoftwareDeploymentSettingsBase] = settings
         self.shell_executable: str = shell_executable
+        self.tempdir = tempdir
         self._managed_hash_store: Optional[str] = None
         self._managed_deployment_hash_store: Optional[str] = None
         self._obj_hash: Optional[int] = None
