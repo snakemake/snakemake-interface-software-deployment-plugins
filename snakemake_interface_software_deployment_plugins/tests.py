@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import asyncio
 from copy import deepcopy
+import tempfile
 from typing import Optional, Type
 import subprocess as sp
 
@@ -118,7 +119,10 @@ class TestSoftwareDeploymentBase(ABC):
     def _get_env(self, tmp_path) -> EnvBase:
         env_cls = self.get_env_cls()
         spec = self._get_cached_env_spec()
-        args = {"settings": self.get_software_deployment_provider_settings()}
+        args = {
+            "settings": self.get_software_deployment_provider_settings(),
+            "tempdir": tempfile.gettempdir(),
+        }
         if issubclass(env_cls, DeployableEnvBase):
             args["deployment_prefix"] = tmp_path / "deployments"
         if issubclass(env_cls, ArchiveableEnvBase):
