@@ -287,6 +287,16 @@ class ArchiveableEnvBase(ABC):
         """
         ...
 
+    @abstractmethod
+    async def deploy_from_archive(self) -> None:
+        """Deploy the environment from self.archive_path to self.deployment_path.
+
+        When issuing shell commands, the environment should use
+        self.run_cmd(cmd: str) in order to ensure that it runs within eventual
+        parent environments (e.g. a container or an env module).
+        """
+        ...
+
     @property
     def archive_path(self) -> Path:
         return self._archive_prefix / self.hash()
