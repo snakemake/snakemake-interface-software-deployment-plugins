@@ -8,6 +8,7 @@ from copy import copy
 from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
+import shutil
 from typing import Any, Dict, Iterable, Optional, Self, Tuple, Type, Union
 import subprocess as sp
 
@@ -253,6 +254,7 @@ class DeployableEnvBase(ABC):
         deployment is senstivive to the path (e.g. in case of conda, which patches
         the RPATH in binaries).
         """
+        assert isinstance(self, EnvBase)
         self.record_hash(hash_object)
         if not self.is_deployment_path_portable():
             hash_object.update(str(self._deployment_prefix).encode())
@@ -262,17 +264,19 @@ class DeployableEnvBase(ABC):
         """Remove the deployed environment."""
         ...
 
-    def managed_deploy(self) -> None:
+    async def managed_deploy(self) -> None:
         if isinstance(self, ArchiveableEnvBase) and self.archive_path.exists():
-            self.deploy_from_archive()
+            await self.deploy_from_archive()
         else:
-            self.deploy()
+            await self.deploy()
 
     def deployment_hash(self) -> str:
+        assert isinstance(self, EnvBase)
         return self._managed_generic_hash("deployment_hash")
 
     @property
     def deployment_path(self) -> Path:
+        assert isinstance(self, EnvBase) and self._deployment_prefix is not None
         return self._deployment_prefix / self.deployment_hash()
 
 
@@ -299,4 +303,11 @@ class ArchiveableEnvBase(ABC):
 
     @property
     def archive_path(self) -> Path:
+        assert isinstance(self, EnvBase) and self._archive_prefix is not None
         return self._archive_prefix / self.hash()
+
+    def remove_archive(self) -> None:
+        """Remove the archived environment."""
+        if self.archive_path.exists():
+            # remove the archive directory
+            shutil.rmtree(self.archive_path, ignore_errors=True)
