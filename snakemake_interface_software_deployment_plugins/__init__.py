@@ -15,6 +15,7 @@ import subprocess as sp
 from snakemake_interface_software_deployment_plugins.settings import (
     SoftwareDeploymentSettingsBase,
 )
+from snakemake_interface_common.exceptions import WorkflowError
 
 
 @dataclass
@@ -116,6 +117,11 @@ class EnvSpecBase(ABC):
             for attr in self.managed_identity_attributes()
         )
 
+    @abstractmethod
+    def __str__(self) -> str:
+        """Return a string representation of the environment spec."""
+        ...
+
 
 class EnvBase(ABC):
     _cache: Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any] = {}
@@ -128,7 +134,7 @@ class EnvBase(ABC):
         shell_executable: str,
         tempdir: Path,
         deployment_prefix: Optional[Path] = None,
-        archive_prefix: Optional[Path] = None,
+        cache_prefix: Optional[Path] = None,
     ):
         self.spec: EnvSpecBase = spec
         self.within: Optional["EnvBase"] = within
@@ -139,7 +145,7 @@ class EnvBase(ABC):
         self._managed_deployment_hash_store: Optional[str] = None
         self._obj_hash: Optional[int] = None
         self._deployment_prefix: Optional[Path] = deployment_prefix
-        self._archive_prefix: Optional[Path] = archive_prefix
+        self._cache_prefix: Optional[Path] = cache_prefix
         self.__post_init__()
 
     def __post_init__(self) -> None:  # noqa B027
@@ -237,6 +243,12 @@ class DeployableEnvBase(ABC):
     @abstractmethod
     def is_deployment_path_portable(self) -> bool: ...
 
+    async def cache(self) -> None:
+        """Determine environment assets and store any associated information to 
+        self.cache_path.
+        """
+        ...
+
     @abstractmethod
     async def deploy(self) -> None:
         """Deploy the environment to self.deployment_path.
@@ -264,11 +276,35 @@ class DeployableEnvBase(ABC):
         """Remove the deployed environment."""
         ...
 
+    def managed_remove(self) -> None:
+        """Remove the deployed environment, handling exceptions."""
+        assert isinstance(self, EnvBase)
+        try:
+            self.remove()
+        except Exception as e:
+            raise WorkflowError(
+                f"Removal of {self.spec} failed: {e}"
+            )
+
+    def remove_cache(self) -> None:
+        """Remove the cached environment assets."""
+        assert isinstance(self, EnvBase)
+        if self.cache_path.exists():
+            try:
+                shutil.rmtree(self.cache_path)
+            except Exception as e:
+                raise WorkflowError(
+                    f"Removal of cache for {self.spec} failed: {e}"
+                )
+
     async def managed_deploy(self) -> None:
-        if isinstance(self, ArchiveableEnvBase) and self.archive_path.exists():
-            await self.deploy_from_archive()
-        else:
+        assert isinstance(self, EnvBase)
+        try:
             await self.deploy()
+        except Exception as e:
+            raise WorkflowError(
+                f"Deployment of {self.spec} failed: {e}"
+            )
 
     def deployment_hash(self) -> str:
         assert isinstance(self, EnvBase)
@@ -279,35 +315,7 @@ class DeployableEnvBase(ABC):
         assert isinstance(self, EnvBase) and self._deployment_prefix is not None
         return self._deployment_prefix / self.deployment_hash()
 
-
-class ArchiveableEnvBase(ABC):
-    @abstractmethod
-    async def archive(self) -> None:
-        """Archive the environment to self.archive_path.
-
-        When issuing shell commands, the environment should use
-        self.run_cmd(cmd: str) in order to ensure that it runs within eventual
-        parent environments (e.g. a container or an env module).
-        """
-        ...
-
-    @abstractmethod
-    async def deploy_from_archive(self) -> None:
-        """Deploy the environment from self.archive_path to self.deployment_path.
-
-        When issuing shell commands, the environment should use
-        self.run_cmd(cmd: str) in order to ensure that it runs within eventual
-        parent environments (e.g. a container or an env module).
-        """
-        ...
-
     @property
-    def archive_path(self) -> Path:
-        assert isinstance(self, EnvBase) and self._archive_prefix is not None
-        return self._archive_prefix / self.hash()
-
-    def remove_archive(self) -> None:
-        """Remove the archived environment."""
-        if self.archive_path.exists():
-            # remove the archive directory
-            shutil.rmtree(self.archive_path, ignore_errors=True)
+    def cache_path(self) -> Path:
+        assert isinstance(self, EnvBase) and self._cache_prefix is not None
+        return self._cache_prefix / self.hash()
