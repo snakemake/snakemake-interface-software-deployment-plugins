@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.6.1...v0.7.0) (2025-09-11)
+
+
+### Features
+
+* deploy from archive ([#18](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/18)) ([f6d62bd](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/f6d62bd6530673c6fbbad382807378dbdcbf0023))
+* pass tempdir to EnvBase ([#16](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/16)) ([28d8351](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/28d83516691e1e90edb00d17bb44d437c69a332d))
+
 ## [0.6.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.6.0...v0.6.1) (2025-03-08)
 
 
