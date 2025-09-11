@@ -8,12 +8,14 @@ from copy import copy
 from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
+import shutil
 from typing import Any, Dict, Iterable, Optional, Self, Tuple, Type, Union
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
     SoftwareDeploymentSettingsBase,
 )
+from snakemake_interface_common.exceptions import WorkflowError
 
 
 @dataclass
@@ -115,6 +117,11 @@ class EnvSpecBase(ABC):
             for attr in self.managed_identity_attributes()
         )
 
+    @abstractmethod
+    def __str__(self) -> str:
+        """Return a string representation of the environment spec."""
+        ...
+
 
 class EnvBase(ABC):
     _cache: Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any] = {}
@@ -126,8 +133,9 @@ class EnvBase(ABC):
         settings: Optional[SoftwareDeploymentSettingsBase],
         shell_executable: str,
         tempdir: Path,
-        deployment_prefix: Optional[Path] = None,
-        archive_prefix: Optional[Path] = None,
+        cache_prefix: Path,
+        deployment_prefix: Path,
+        pinfile_prefix: Path,
     ):
         self.spec: EnvSpecBase = spec
         self.within: Optional["EnvBase"] = within
@@ -137,8 +145,9 @@ class EnvBase(ABC):
         self._managed_hash_store: Optional[str] = None
         self._managed_deployment_hash_store: Optional[str] = None
         self._obj_hash: Optional[int] = None
-        self._deployment_prefix: Optional[Path] = deployment_prefix
-        self._archive_prefix: Optional[Path] = archive_prefix
+        self._deployment_prefix: Path = deployment_prefix
+        self._cache_prefix: Path = cache_prefix
+        self._pinfile_prefix: Path = pinfile_prefix
         self.__post_init__()
 
     def __post_init__(self) -> None:  # noqa B027
@@ -232,9 +241,72 @@ class EnvBase(ABC):
         )
 
 
+class PinnableEnvBase(ABC):
+    @classmethod
+    @abstractmethod
+    def pinfile_extension(cls) -> str: ...
+
+    @abstractmethod
+    def pin(self) -> None:
+        """Pin the environment to potentially more concrete versions than defined.
+        Only implement this base class if pinning makes sense for your kind of
+        environment. Pinfile has to be written to self.pinfile.
+        """
+        ...
+
+    @property
+    def pinfile(self) -> Path:
+        assert isinstance(self, EnvBase)
+        ext = self.pinfile_extension()
+        if not ext.startswith("."):
+            raise ValueError("pinfile_extension must start with a dot.")
+        return (self._pinfile_prefix / self.hash()).with_suffix(
+            self.pinfile_extension()
+        )
+
+
+class CacheableEnvBase(ABC):
+    async def get_cache_assets(self) -> Iterable[str]: ...
+
+    @abstractmethod
+    def cache_assets(self) -> None:
+        """Determine environment assets and store any associated information or data to
+        self.cache_path.
+        """
+        ...
+
+    @property
+    def cache_path(self) -> Path:
+        assert isinstance(self, EnvBase)
+        return self._cache_prefix
+
+    async def remove_cache(self) -> None:
+        """Remove the cached environment assets."""
+        assert isinstance(self, EnvBase)
+        for asset in await self.get_cache_assets():
+            asset_path = self.cache_path / asset
+            if asset_path.exists():
+                try:
+                    if asset_path.is_dir():
+                        shutil.rmtree(asset_path)
+                    else:
+                        asset_path.unlink()
+                except Exception as e:
+                    raise WorkflowError(
+                        f"Removal of cache asset {asset_path} for {self.spec} failed: {e}"
+                    )
+
+
 class DeployableEnvBase(ABC):
     @abstractmethod
-    def is_deployment_path_portable(self) -> bool: ...
+    def is_deployment_path_portable(self) -> bool:
+        """Return whether the deployment path matters for the environment, i.e.
+        whether the environment is portable. If this returns False, the deployment
+        path is considered for the deployment hash. For example, conda environments are not
+        portable because they hardcode the path in binaries, while containers are
+        portable.
+        """
+        ...
 
     @abstractmethod
     async def deploy(self) -> None:
@@ -253,6 +325,7 @@ class DeployableEnvBase(ABC):
         deployment is senstivive to the path (e.g. in case of conda, which patches
         the RPATH in binaries).
         """
+        assert isinstance(self, EnvBase)
         self.record_hash(hash_object)
         if not self.is_deployment_path_portable():
             hash_object.update(str(self._deployment_prefix).encode())
@@ -262,31 +335,26 @@ class DeployableEnvBase(ABC):
         """Remove the deployed environment."""
         ...
 
-    def managed_deploy(self) -> None:
-        if isinstance(self, ArchiveableEnvBase) and self.archive_path.exists():
-            self.deploy_from_archive()
-        else:
-            self.deploy()
+    def managed_remove(self) -> None:
+        """Remove the deployed environment, handling exceptions."""
+        assert isinstance(self, EnvBase)
+        try:
+            self.remove()
+        except Exception as e:
+            raise WorkflowError(f"Removal of {self.spec} failed: {e}")
+
+    async def managed_deploy(self) -> None:
+        assert isinstance(self, EnvBase)
+        try:
+            await self.deploy()
+        except Exception as e:
+            raise WorkflowError(f"Deployment of {self.spec} failed: {e}")
 
     def deployment_hash(self) -> str:
+        assert isinstance(self, EnvBase)
         return self._managed_generic_hash("deployment_hash")
 
     @property
     def deployment_path(self) -> Path:
+        assert isinstance(self, EnvBase) and self._deployment_prefix is not None
         return self._deployment_prefix / self.deployment_hash()
-
-
-class ArchiveableEnvBase(ABC):
-    @abstractmethod
-    async def archive(self) -> None:
-        """Archive the environment to self.archive_path.
-
-        When issuing shell commands, the environment should use
-        self.run_cmd(cmd: str) in order to ensure that it runs within eventual
-        parent environments (e.g. a container or an env module).
-        """
-        ...
-
-    @property
-    def archive_path(self) -> Path:
-        return self._archive_prefix / self.hash()

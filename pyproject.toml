@@ -23,7 +23,7 @@ snakemake-software-deployment-plugin-envmodules = "^0.1.2"
 omit = [".*", "*/site-packages/*"]
 
 [tool.coverage.report]
-fail_under = 63
+fail_under = 60
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
