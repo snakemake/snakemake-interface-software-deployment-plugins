@@ -257,6 +257,9 @@ class PinnableEnvBase(ABC):
     @property
     def pinfile(self) -> Path:
         assert isinstance(self, EnvBase)
+        ext = self.pinfile_extension()
+        if not ext.startswith("."):
+            raise ValueError("pinfile_extension must start with a dot.")
         return (self._pinfile_prefix / self.hash()).with_suffix(
             self.pinfile_extension()
         )
