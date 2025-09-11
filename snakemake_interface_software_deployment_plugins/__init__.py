@@ -133,8 +133,9 @@ class EnvBase(ABC):
         settings: Optional[SoftwareDeploymentSettingsBase],
         shell_executable: str,
         tempdir: Path,
-        deployment_prefix: Optional[Path] = None,
-        cache_prefix: Optional[Path] = None,
+        cache_prefix: Path,
+        deployment_prefix: Path,
+        pinfile_prefix: Path,
     ):
         self.spec: EnvSpecBase = spec
         self.within: Optional["EnvBase"] = within
@@ -144,8 +145,9 @@ class EnvBase(ABC):
         self._managed_hash_store: Optional[str] = None
         self._managed_deployment_hash_store: Optional[str] = None
         self._obj_hash: Optional[int] = None
-        self._deployment_prefix: Optional[Path] = deployment_prefix
-        self._cache_prefix: Optional[Path] = cache_prefix
+        self._deployment_prefix: Path = deployment_prefix
+        self._cache_prefix: Path = cache_prefix
+        self._pinfile_prefix: Path = pinfile_prefix
         self.__post_init__()
 
     def __post_init__(self) -> None:  # noqa B027
@@ -239,13 +241,68 @@ class EnvBase(ABC):
         )
 
 
+class PinnableEnvBase(ABC):
+    @abstractmethod
+    @classmethod
+    def pinfile_extension(cls) -> str:
+        ...
+
+    @abstractmethod
+    def pin(self) -> None:
+        """Pin the environment to potentially more concrete versions than defined.
+        Only implement this base class if pinning makes sense for your kind of
+        environment. Pinfile has to be written to self.pinfile.
+        """
+        ...
+
+    @property
+    def pinfile(self) -> Path:
+        assert isinstance(self, EnvBase)
+        return (self._pinfile_prefix / self.hash()).with_suffix(self.pinfile_extension())
+
+
+class CacheableEnvBase(ABC):
+    async def get_cache_assets(self) -> Iterable[str]:
+        ...
+
+    @abstractmethod
+    def cache_assets(self) -> None:
+        """Determine environment assets and store any associated information or data to 
+        self.cache_path.
+        """
+        ...
+
+    @property
+    def cache_path(self) -> Path:
+        assert isinstance(self, EnvBase)
+        return self._cache_prefix
+
+
+    async def remove_cache(self) -> None:
+        """Remove the cached environment assets."""
+        assert isinstance(self, EnvBase)
+        for asset in await self.get_cache_assets():
+            asset_path = self.cache_path / asset
+            if asset_path.exists():
+                try:
+                    if asset_path.is_dir():
+                        shutil.rmtree(asset_path)
+                    else:
+                        asset_path.unlink()
+                except Exception as e:
+                    raise WorkflowError(
+                        f"Removal of cache asset {asset_path} for {self.spec} failed: {e}"
+                    )
+
+
 class DeployableEnvBase(ABC):
     @abstractmethod
-    def is_deployment_path_portable(self) -> bool: ...
-
-    async def cache(self) -> None:
-        """Determine environment assets and store any associated information to 
-        self.cache_path.
+    def is_deployment_path_portable(self) -> bool: 
+        """Return whether the deployment path matters for the environment, i.e.
+        whether the environment is portable. If this returns False, the deployment
+        path is considered for the deployment hash. For example, conda environments are not
+        portable because they hardcode the path in binaries, while containers are
+        portable.
         """
         ...
 
@@ -286,17 +343,6 @@ class DeployableEnvBase(ABC):
                 f"Removal of {self.spec} failed: {e}"
             )
 
-    def remove_cache(self) -> None:
-        """Remove the cached environment assets."""
-        assert isinstance(self, EnvBase)
-        if self.cache_path.exists():
-            try:
-                shutil.rmtree(self.cache_path)
-            except Exception as e:
-                raise WorkflowError(
-                    f"Removal of cache for {self.spec} failed: {e}"
-                )
-
     async def managed_deploy(self) -> None:
         assert isinstance(self, EnvBase)
         try:
@@ -314,8 +360,3 @@ class DeployableEnvBase(ABC):
     def deployment_path(self) -> Path:
         assert isinstance(self, EnvBase) and self._deployment_prefix is not None
         return self._deployment_prefix / self.deployment_hash()
-
-    @property
-    def cache_path(self) -> Path:
-        assert isinstance(self, EnvBase) and self._cache_prefix is not None
-        return self._cache_prefix / self.hash()
