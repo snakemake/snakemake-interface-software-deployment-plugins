@@ -242,8 +242,8 @@ class EnvBase(ABC):
 
 
 class PinnableEnvBase(ABC):
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def pinfile_extension(cls) -> str:
         ...
 
