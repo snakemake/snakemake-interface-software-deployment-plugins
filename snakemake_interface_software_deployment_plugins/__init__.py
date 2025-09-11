@@ -244,8 +244,7 @@ class EnvBase(ABC):
 class PinnableEnvBase(ABC):
     @classmethod
     @abstractmethod
-    def pinfile_extension(cls) -> str:
-        ...
+    def pinfile_extension(cls) -> str: ...
 
     @abstractmethod
     def pin(self) -> None:
@@ -258,16 +257,17 @@ class PinnableEnvBase(ABC):
     @property
     def pinfile(self) -> Path:
         assert isinstance(self, EnvBase)
-        return (self._pinfile_prefix / self.hash()).with_suffix(self.pinfile_extension())
+        return (self._pinfile_prefix / self.hash()).with_suffix(
+            self.pinfile_extension()
+        )
 
 
 class CacheableEnvBase(ABC):
-    async def get_cache_assets(self) -> Iterable[str]:
-        ...
+    async def get_cache_assets(self) -> Iterable[str]: ...
 
     @abstractmethod
     def cache_assets(self) -> None:
-        """Determine environment assets and store any associated information or data to 
+        """Determine environment assets and store any associated information or data to
         self.cache_path.
         """
         ...
@@ -276,7 +276,6 @@ class CacheableEnvBase(ABC):
     def cache_path(self) -> Path:
         assert isinstance(self, EnvBase)
         return self._cache_prefix
-
 
     async def remove_cache(self) -> None:
         """Remove the cached environment assets."""
@@ -297,7 +296,7 @@ class CacheableEnvBase(ABC):
 
 class DeployableEnvBase(ABC):
     @abstractmethod
-    def is_deployment_path_portable(self) -> bool: 
+    def is_deployment_path_portable(self) -> bool:
         """Return whether the deployment path matters for the environment, i.e.
         whether the environment is portable. If this returns False, the deployment
         path is considered for the deployment hash. For example, conda environments are not
@@ -339,18 +338,14 @@ class DeployableEnvBase(ABC):
         try:
             self.remove()
         except Exception as e:
-            raise WorkflowError(
-                f"Removal of {self.spec} failed: {e}"
-            )
+            raise WorkflowError(f"Removal of {self.spec} failed: {e}")
 
     async def managed_deploy(self) -> None:
         assert isinstance(self, EnvBase)
         try:
             await self.deploy()
         except Exception as e:
-            raise WorkflowError(
-                f"Deployment of {self.spec} failed: {e}"
-            )
+            raise WorkflowError(f"Deployment of {self.spec} failed: {e}")
 
     def deployment_hash(self) -> str:
         assert isinstance(self, EnvBase)
