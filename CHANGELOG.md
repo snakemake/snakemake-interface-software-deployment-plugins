@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.2...v0.7.3) (2025-09-12)
+
+
+### Bug Fixes
+
+* use Protocol type ([#23](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/23)) ([2a10a4a](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/2a10a4a011515de79dd1c7eff0a8bfc6a8217416))
+
 ## [0.7.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.1...v0.7.2) (2025-09-12)
 
 
