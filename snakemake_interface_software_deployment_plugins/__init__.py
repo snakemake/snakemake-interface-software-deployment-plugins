@@ -9,7 +9,17 @@ from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
 import shutil
-from typing import Any, Dict, Iterable, Optional, Self, Tuple, Type, Union
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Iterable,
+    Optional,
+    Self,
+    Tuple,
+    Type,
+    Union,
+)
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -124,7 +134,18 @@ class EnvSpecBase(ABC):
 
 
 class EnvBase(ABC):
-    _cache: Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any] = {}
+    _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
+    spec: EnvSpecBase
+    within: Optional["EnvBase"]
+    settings: Optional[SoftwareDeploymentSettingsBase]
+    shell_executable: str
+    tempdir: Path
+    _cache_prefix: Path
+    _deployment_prefix: Path
+    _pinfile_prefix: Path
+    _managed_hash_store: Optional[str] = None
+    _managed_deployment_hash_store: Optional[str] = None
+    _obj_hash: Optional[int] = None
 
     def __init__(
         self,
@@ -142,9 +163,6 @@ class EnvBase(ABC):
         self.settings: Optional[SoftwareDeploymentSettingsBase] = settings
         self.shell_executable: str = shell_executable
         self.tempdir = tempdir
-        self._managed_hash_store: Optional[str] = None
-        self._managed_deployment_hash_store: Optional[str] = None
-        self._obj_hash: Optional[int] = None
         self._deployment_prefix: Path = deployment_prefix
         self._cache_prefix: Path = cache_prefix
         self._pinfile_prefix: Path = pinfile_prefix
@@ -176,6 +194,21 @@ class EnvBase(ABC):
         using self.spec.
         """
         ...
+
+    def is_deployable(self) -> bool:
+        """Overwrite this in case the deployability of the environment depends on
+        the spec or settings."""
+        return isinstance(self, DeployableEnvBase)
+
+    def is_pinnable(self) -> bool:
+        """Overwrite this in case the pinability of the environment depends on
+        the spec or settings."""
+        return isinstance(self, PinnableEnvBase)
+
+    def is_cacheable(self) -> bool:
+        """Overwrite this in case the cacheability of the environment depends on
+        the spec or settings."""
+        return isinstance(self, CacheableEnvBase)
 
     @abstractmethod
     def record_hash(self, hash_object) -> None:
@@ -241,7 +274,7 @@ class EnvBase(ABC):
         )
 
 
-class PinnableEnvBase(ABC):
+class PinnableEnvBase(EnvBase, ABC):
     @classmethod
     @abstractmethod
     def pinfile_extension(cls) -> str: ...
@@ -256,7 +289,6 @@ class PinnableEnvBase(ABC):
 
     @property
     def pinfile(self) -> Path:
-        assert isinstance(self, EnvBase)
         ext = self.pinfile_extension()
         if not ext.startswith("."):
             raise ValueError("pinfile_extension must start with a dot.")
@@ -265,7 +297,7 @@ class PinnableEnvBase(ABC):
         )
 
 
-class CacheableEnvBase(ABC):
+class CacheableEnvBase(EnvBase, ABC):
     async def get_cache_assets(self) -> Iterable[str]: ...
 
     @abstractmethod
@@ -277,12 +309,10 @@ class CacheableEnvBase(ABC):
 
     @property
     def cache_path(self) -> Path:
-        assert isinstance(self, EnvBase)
         return self._cache_prefix
 
     async def remove_cache(self) -> None:
         """Remove the cached environment assets."""
-        assert isinstance(self, EnvBase)
         for asset in await self.get_cache_assets():
             asset_path = self.cache_path / asset
             if asset_path.exists():
@@ -297,7 +327,7 @@ class CacheableEnvBase(ABC):
                     )
 
 
-class DeployableEnvBase(ABC):
+class DeployableEnvBase(EnvBase, ABC):
     @abstractmethod
     def is_deployment_path_portable(self) -> bool:
         """Return whether the deployment path matters for the environment, i.e.
@@ -325,7 +355,6 @@ class DeployableEnvBase(ABC):
         deployment is senstivive to the path (e.g. in case of conda, which patches
         the RPATH in binaries).
         """
-        assert isinstance(self, EnvBase)
         self.record_hash(hash_object)
         if not self.is_deployment_path_portable():
             hash_object.update(str(self._deployment_prefix).encode())
@@ -337,24 +366,21 @@ class DeployableEnvBase(ABC):
 
     def managed_remove(self) -> None:
         """Remove the deployed environment, handling exceptions."""
-        assert isinstance(self, EnvBase)
         try:
             self.remove()
         except Exception as e:
             raise WorkflowError(f"Removal of {self.spec} failed: {e}")
 
     async def managed_deploy(self) -> None:
-        assert isinstance(self, EnvBase)
         try:
             await self.deploy()
         except Exception as e:
             raise WorkflowError(f"Deployment of {self.spec} failed: {e}")
 
     def deployment_hash(self) -> str:
-        assert isinstance(self, EnvBase)
         return self._managed_generic_hash("deployment_hash")
 
     @property
     def deployment_path(self) -> Path:
-        assert isinstance(self, EnvBase) and self._deployment_prefix is not None
+        assert self._deployment_prefix is not None
         return self._deployment_prefix / self.deployment_hash()
