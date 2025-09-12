@@ -15,12 +15,10 @@ from typing import (
     Dict,
     Iterable,
     Optional,
-    Protocol,
     Self,
     Tuple,
     Type,
     Union,
-    runtime_checkable,
 )
 import subprocess as sp
 
@@ -135,8 +133,7 @@ class EnvSpecBase(ABC):
         ...
 
 
-@runtime_checkable
-class EnvBase(Protocol):
+class EnvBase(ABC):
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
     spec: EnvSpecBase
     within: Optional["EnvBase"]
@@ -277,8 +274,7 @@ class EnvBase(Protocol):
         )
 
 
-@runtime_checkable
-class PinnableEnvBase(EnvBase, Protocol):
+class PinnableEnvBase(EnvBase, ABC):
     @classmethod
     @abstractmethod
     def pinfile_extension(cls) -> str: ...
@@ -301,8 +297,7 @@ class PinnableEnvBase(EnvBase, Protocol):
         )
 
 
-@runtime_checkable
-class CacheableEnvBase(EnvBase, Protocol):
+class CacheableEnvBase(EnvBase, ABC):
     async def get_cache_assets(self) -> Iterable[str]: ...
 
     @abstractmethod
@@ -332,8 +327,7 @@ class CacheableEnvBase(EnvBase, Protocol):
                     )
 
 
-@runtime_checkable
-class DeployableEnvBase(EnvBase, Protocol):
+class DeployableEnvBase(EnvBase, ABC):
     @abstractmethod
     def is_deployment_path_portable(self) -> bool:
         """Return whether the deployment path matters for the environment, i.e.
