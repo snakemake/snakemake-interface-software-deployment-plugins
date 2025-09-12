@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.4](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.3...v0.7.4) (2025-09-12)
+
+
+### Bug Fixes
+
+* properly check source file type in test suite ([#25](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/25)) ([b0df467](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/b0df4670ff8ab8097cf5c281ab3f13859c718ae9))
+
 ## [0.7.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.2...v0.7.3) (2025-09-12)
 
 
