@@ -129,10 +129,15 @@ class TestSoftwareDeploymentBase(ABC):
 
     def test_source_path_attributes(self):
         spec = self.get_env_spec()
+
+        def is_source_file_or_none(attr: str) -> bool:
+            val = getattr(spec, attr)
+            return val is None or isinstance(val, EnvSpecSourceFile)
+
         assert all(
             isinstance(attr, str)
             and hasattr(spec, attr)
-            and isinstance(getattr(spec, attr), (EnvSpecSourceFile, None))
+            and is_source_file_or_none(attr)
             for attr in spec.source_path_attributes()
         ), "bug in plugin: all source path attributes must be of type EnvSpecSourceFile"
 
