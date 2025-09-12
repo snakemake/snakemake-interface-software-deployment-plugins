@@ -8,7 +8,6 @@ import subprocess as sp
 import pytest
 
 from snakemake_interface_software_deployment_plugins import (
-    ArchiveableEnvBase,
     CacheableEnvBase,
     DeployableEnvBase,
     EnvBase,
@@ -54,9 +53,21 @@ class TestSoftwareDeploymentBase(ABC):
         ...
 
     @abstractmethod
-    def get_software_deployment_provider_settings(
+    def get_settings(
         self,
     ) -> Optional[SoftwareDeploymentSettingsBase]: ...
+
+    @abstractmethod
+    def get_settings_cls(self) -> Optional[Type[SoftwareDeploymentSettingsBase]]: ...
+
+    def test_envspec_str(self):
+        print("env spec", str(self.get_env_spec()))
+
+    def test_default_settings(self):
+        settings_cls = self.get_settings_cls()
+        if settings_cls is None:
+            pytest.skip("No settings class defined.")
+        settings_cls()
 
     def test_shellcmd(self, tmp_path):
         env = self._get_env(tmp_path)
@@ -89,7 +100,7 @@ class TestSoftwareDeploymentBase(ABC):
 
         self._deploy(env, tmp_path)
 
-        assert any((tmp_path / "archives").iterdir())
+        assert any(env.cache_path.iterdir())
 
     def test_pin(self, tmp_path):
         env = self._get_env(tmp_path)
@@ -97,6 +108,8 @@ class TestSoftwareDeploymentBase(ABC):
             pytest.skip("Environment is not pinnable.")
 
         asyncio.run(env.pin())
+        assert env.pinfile.exists()
+        print("Pinfile content:", env.pinfile.read_text(), sep="\n")
         self._deploy(env, tmp_path)
 
     def test_report_software(self, tmp_path):
@@ -130,15 +143,25 @@ class TestSoftwareDeploymentBase(ABC):
     def _get_env(self, tmp_path) -> EnvBase:
         env_cls = self.get_env_cls()
         spec = self._get_cached_env_spec()
+
+        tempdir = tmp_path / "temp"
+        deployment_prefix = tmp_path / "deployments"
+        cache_prefix = tmp_path / "cache"
+        pinfile_prefix = tmp_path / "pinfiles"
+        tempdir.mkdir(parents=True, exist_ok=True)
+        deployment_prefix.mkdir(parents=True, exist_ok=True)
+        cache_prefix.mkdir(parents=True, exist_ok=True)
+        pinfile_prefix.mkdir(parents=True, exist_ok=True)
+
         return env_cls(
             spec=spec,
             within=None,
-            settings=self.get_software_deployment_provider_settings(),
+            settings=self.get_settings(),
             shell_executable=self.shell_executable,
-            tempdir=tmp_path / "temp",
-            deployment_prefix=tmp_path / "deployments",
-            cache_prefix=tmp_path / "cache",
-            pinfile_prefix=tmp_path / "pinfiles",
+            tempdir=tempdir,
+            deployment_prefix=deployment_prefix,
+            cache_prefix=cache_prefix,
+            pinfile_prefix=pinfile_prefix,
         )
 
     def _deploy(self, env: DeployableEnvBase, tmp_path):
