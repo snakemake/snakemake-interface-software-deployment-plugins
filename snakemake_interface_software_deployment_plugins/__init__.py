@@ -135,6 +135,7 @@ class EnvSpecBase(ABC):
         ...
 
 
+@runtime_checkable
 class EnvBase(Protocol):
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
     spec: EnvSpecBase
