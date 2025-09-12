@@ -136,7 +136,8 @@ class TestSoftwareDeploymentBase(ABC):
         spec = deepcopy(self.get_env_spec())
         for attr in spec.source_path_attributes():
             source_file = getattr(spec, attr)
-            source_file.cached = source_file.path_or_uri
+            if source_file is not None:
+                source_file.cached = source_file.path_or_uri
         return spec
 
     def _get_env(self, tmp_path) -> EnvBase:
