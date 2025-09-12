@@ -9,7 +9,19 @@ from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
 import shutil
-from typing import Any, ClassVar, Dict, Iterable, Optional, Protocol, Self, Tuple, Type, Union, runtime_checkable
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Iterable,
+    Optional,
+    Protocol,
+    Self,
+    Tuple,
+    Type,
+    Union,
+    runtime_checkable,
+)
 import subprocess as sp
 
 from snakemake_interface_software_deployment_plugins.settings import (
