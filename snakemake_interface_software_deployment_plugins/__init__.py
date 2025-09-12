@@ -247,7 +247,7 @@ class PinnableEnvBase(ABC):
     def pinfile_extension(cls) -> str: ...
 
     @abstractmethod
-    def pin(self) -> None:
+    async def pin(self) -> None:
         """Pin the environment to potentially more concrete versions than defined.
         Only implement this base class if pinning makes sense for your kind of
         environment. Pinfile has to be written to self.pinfile.
@@ -269,7 +269,7 @@ class CacheableEnvBase(ABC):
     async def get_cache_assets(self) -> Iterable[str]: ...
 
     @abstractmethod
-    def cache_assets(self) -> None:
+    async def cache_assets(self) -> None:
         """Determine environment assets and store any associated information or data to
         self.cache_path.
         """

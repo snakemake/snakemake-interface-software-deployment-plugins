@@ -9,10 +9,12 @@ import pytest
 
 from snakemake_interface_software_deployment_plugins import (
     ArchiveableEnvBase,
+    CacheableEnvBase,
     DeployableEnvBase,
     EnvBase,
     EnvSpecBase,
     EnvSpecSourceFile,
+    PinnableEnvBase,
     SoftwareReport,
 )
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -80,13 +82,22 @@ class TestSoftwareDeploymentBase(ABC):
 
     def test_archive(self, tmp_path):
         env = self._get_env(tmp_path)
-        if not isinstance(env, ArchiveableEnvBase):
-            pytest.skip("Environment either not deployable or not archiveable.")
+        if not isinstance(env, CacheableEnvBase):
+            pytest.skip("Environment either not deployable or not cacheable.")
+
+        asyncio.run(env.cache_assets())
 
         self._deploy(env, tmp_path)
 
-        asyncio.run(env.archive())
         assert any((tmp_path / "archives").iterdir())
+
+    def test_pin(self, tmp_path):
+        env = self._get_env(tmp_path)
+        if not isinstance(env, PinnableEnvBase):
+            pytest.skip("Environment is not pinnable.")
+
+        asyncio.run(env.pin())
+        self._deploy(env, tmp_path)
 
     def test_report_software(self, tmp_path):
         env = self._get_env(tmp_path)
@@ -119,16 +130,15 @@ class TestSoftwareDeploymentBase(ABC):
     def _get_env(self, tmp_path) -> EnvBase:
         env_cls = self.get_env_cls()
         spec = self._get_cached_env_spec()
-        args = {
-            "settings": self.get_software_deployment_provider_settings(),
-            "tempdir": tempfile.gettempdir(),
-        }
-        if issubclass(env_cls, DeployableEnvBase):
-            args["deployment_prefix"] = tmp_path / "deployments"
-        if issubclass(env_cls, ArchiveableEnvBase):
-            args["archive_prefix"] = tmp_path / "archives"
         return env_cls(
-            spec=spec, within=None, shell_executable=self.shell_executable, **args
+            spec=spec,
+            within=None,
+            settings=self.get_software_deployment_provider_settings(),
+            shell_executable=self.shell_executable,
+            tempdir=tmp_path / "temp",
+            deployment_prefix=tmp_path / "deployments",
+            cache_prefix=tmp_path / "cache",
+            pinfile_prefix=tmp_path / "pinfiles",
         )
 
     def _deploy(self, env: DeployableEnvBase, tmp_path):
