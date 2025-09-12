@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.0...v0.7.1) (2025-09-12)
+
+
+### Bug Fixes
+
+* adapt tests to API changes ([#19](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/19)) ([3f37e5f](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/3f37e5faf50869fcf18a33e1b1ae7feb382cb9d6))
+
 ## [0.7.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.6.1...v0.7.0) (2025-09-11)
 
 
