@@ -90,10 +90,12 @@ class TestSoftwareDeploymentBase(ABC):
         cmd = env.managed_decorate_shellcmd(self.get_test_cmd())
         assert sp.run(cmd, shell=True, executable=self.shell_executable).returncode == 0
 
-    def test_archive(self, tmp_path):
+    def test_cache(self, tmp_path):
         env = self._get_env(tmp_path)
-        if not isinstance(env, CacheableEnvBase):
+        if not env.is_cacheable():
             pytest.skip("Environment either not deployable or not cacheable.")
+
+        assert isinstance(env, CacheableEnvBase)
 
         asyncio.run(env.cache_assets())
 
@@ -103,8 +105,10 @@ class TestSoftwareDeploymentBase(ABC):
 
     def test_pin(self, tmp_path):
         env = self._get_env(tmp_path)
-        if not isinstance(env, PinnableEnvBase):
+        if not env.is_pinnable():
             pytest.skip("Environment is not pinnable.")
+
+        assert isinstance(env, PinnableEnvBase)
 
         asyncio.run(env.pin())
         assert env.pinfile.exists()
@@ -164,9 +168,10 @@ class TestSoftwareDeploymentBase(ABC):
             pinfile_prefix=pinfile_prefix,
         )
 
-    def _deploy(self, env: DeployableEnvBase, tmp_path):
-        if not isinstance(env, DeployableEnvBase):
+    def _deploy(self, env: EnvBase, tmp_path):
+        if not env.is_deployable():
             pytest.skip("Environment is not deployable.")
 
+        assert isinstance(env, DeployableEnvBase)
         asyncio.run(env.deploy())
         assert any((tmp_path / "deployments").iterdir())
