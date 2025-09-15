@@ -71,7 +71,7 @@ class TestSoftwareDeploymentBase(ABC):
     def test_shellcmd(self, tmp_path):
         env = self._get_env(tmp_path)
 
-        if isinstance(env, DeployableEnvBase):
+        if env.is_deployable():
             pytest.skip("Environment is deployable, using test_deploy instead.")
 
         cmd = self.get_test_cmd()
