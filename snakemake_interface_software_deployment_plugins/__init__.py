@@ -145,9 +145,7 @@ class ShellExecutable:
         return Path(self.executable).name
 
     def run(self, cmd: str, **kwargs) -> sp.CompletedProcess:
-        return sp.run(
-            [self.executable] + self.args + [self.command_arg, cmd], **kwargs
-        )
+        return sp.run([self.executable] + self.args + [self.command_arg, cmd], **kwargs)
 
 
 class EnvBase(ABC):

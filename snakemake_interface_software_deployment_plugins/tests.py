@@ -78,9 +78,7 @@ class TestSoftwareDeploymentBase(ABC):
         cmd = self.get_test_cmd()
         decorated_cmd = env.managed_decorate_shellcmd(cmd)
         assert cmd != decorated_cmd
-        assert (
-            env.run_cmd(decorated_cmd).returncode == 0
-        )
+        assert env.run_cmd(decorated_cmd).returncode == 0
 
     def test_deploy(self, tmp_path):
         env = self._get_env(tmp_path)
