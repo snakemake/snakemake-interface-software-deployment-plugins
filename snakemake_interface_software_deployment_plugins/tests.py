@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import asyncio
 from copy import deepcopy
 from typing import Optional, Type
-import subprocess as sp
 
 import pytest
 
