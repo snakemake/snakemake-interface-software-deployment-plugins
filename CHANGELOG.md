@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.7...v0.8.0) (2025-09-19)
+
+
+### Features
+
+* use class for representing shell executable ([fd3e9f9](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/fd3e9f9e1ac66a194046f38558e4d6bd880b1dd2))
+
 ## [0.7.7](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.6...v0.7.7) (2025-09-19)
 
 
