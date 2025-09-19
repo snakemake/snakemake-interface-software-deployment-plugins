@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.6](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.5...v0.7.6) (2025-09-19)
+
+
+### Bug Fixes
+
+* use login shell by default ([d7fcf57](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/d7fcf57ae4e6a4fe7fe145df19e8a28ec6960e6b))
+
 ## [0.7.5](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.4...v0.7.5) (2025-09-15)
 
 
