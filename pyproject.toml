@@ -5,7 +5,7 @@ license = "MIT"
 name = "snakemake-interface-software-deployment-plugins"
 packages = [{include = "snakemake_interface_software_deployment_plugins"}]
 readme = "README.md"
-version = "0.7.7"
+version = "0.8.0"
 
 [tool.poetry.dependencies]
 argparse-dataclass = "^2.0.0"
