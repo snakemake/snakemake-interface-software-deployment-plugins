@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.5](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.4...v0.7.5) (2025-09-15)
+
+
+### Bug Fixes
+
+* use method for testing if env is deployable in test suite ([1c64a8f](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/1c64a8f96554133ed1150ab00a55303dac1e68cc))
+
 ## [0.7.4](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.3...v0.7.4) (2025-09-12)
 
 
