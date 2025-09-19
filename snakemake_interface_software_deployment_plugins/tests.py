@@ -13,6 +13,7 @@ from snakemake_interface_software_deployment_plugins import (
     EnvSpecBase,
     EnvSpecSourceFile,
     PinnableEnvBase,
+    ShellExecutable,
     SoftwareReport,
 )
 from snakemake_interface_software_deployment_plugins.settings import (
@@ -25,7 +26,7 @@ _TEST_SDM_NAME = "test-sdm"
 
 class TestSoftwareDeploymentBase(ABC):
     __test__ = False
-    shell_executable = ["bash", "-l", "-c"]
+    shell_executable = ShellExecutable("bash", args=["-l"], command_arg="-c")
 
     @abstractmethod
     def get_env_spec(self) -> EnvSpecBase:

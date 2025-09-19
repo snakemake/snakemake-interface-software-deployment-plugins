@@ -134,12 +134,24 @@ class EnvSpecBase(ABC):
         ...
 
 
+@dataclass
+class ShellExecutable:
+    executable: str
+    args: List[str]
+    command_arg: str
+
+    def run(self, cmd: str, **kwargs) -> sp.CompletedProcess:
+        return sp.run(
+            [self.executable] + self.args + [self.command_arg, cmd], **kwargs
+        )
+
+
 class EnvBase(ABC):
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
     spec: EnvSpecBase
     within: Optional["EnvBase"]
     settings: Optional[SoftwareDeploymentSettingsBase]
-    shell_executable: List[str]
+    shell_executable: ShellExecutable
     tempdir: Path
     _cache_prefix: Path
     _deployment_prefix: Path
@@ -153,7 +165,7 @@ class EnvBase(ABC):
         spec: EnvSpecBase,
         within: Optional["EnvBase"],
         settings: Optional[SoftwareDeploymentSettingsBase],
-        shell_executable: List[str],
+        shell_executable: ShellExecutable,
         tempdir: Path,
         cache_prefix: Path,
         deployment_prefix: Path,
@@ -240,7 +252,7 @@ class EnvBase(ABC):
         assert "shell" not in kwargs, "shell argument has to be set to False"
         if self.within is not None:
             cmd = self.within.managed_decorate_shellcmd(cmd)
-        return sp.run(self.shell_executable + [cmd], **kwargs)
+        return self.shell_executable.run(cmd, **kwargs)
 
     def managed_decorate_shellcmd(self, cmd: str) -> str:
         cmd = self.decorate_shellcmd(cmd)
