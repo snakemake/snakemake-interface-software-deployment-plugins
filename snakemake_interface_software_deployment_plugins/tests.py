@@ -25,7 +25,7 @@ _TEST_SDM_NAME = "test-sdm"
 
 class TestSoftwareDeploymentBase(ABC):
     __test__ = False
-    shell_executable = "bash"
+    shell_executable = ["bash", "-i", "-c"]
 
     @abstractmethod
     def get_env_spec(self) -> EnvSpecBase:

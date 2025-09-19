@@ -14,6 +14,7 @@ from typing import (
     ClassVar,
     Dict,
     Iterable,
+    List,
     Optional,
     Self,
     Tuple,
@@ -138,7 +139,7 @@ class EnvBase(ABC):
     spec: EnvSpecBase
     within: Optional["EnvBase"]
     settings: Optional[SoftwareDeploymentSettingsBase]
-    shell_executable: str
+    shell_executable: List[str]
     tempdir: Path
     _cache_prefix: Path
     _deployment_prefix: Path
@@ -152,7 +153,7 @@ class EnvBase(ABC):
         spec: EnvSpecBase,
         within: Optional["EnvBase"],
         settings: Optional[SoftwareDeploymentSettingsBase],
-        shell_executable: str,
+        shell_executable: List[str],
         tempdir: Path,
         cache_prefix: Path,
         deployment_prefix: Path,
@@ -161,7 +162,7 @@ class EnvBase(ABC):
         self.spec: EnvSpecBase = spec
         self.within: Optional["EnvBase"] = within
         self.settings: Optional[SoftwareDeploymentSettingsBase] = settings
-        self.shell_executable: str = shell_executable
+        self.shell_executable = shell_executable
         self.tempdir = tempdir
         self._deployment_prefix: Path = deployment_prefix
         self._cache_prefix: Path = cache_prefix
@@ -236,9 +237,10 @@ class EnvBase(ABC):
 
         kwargs is passed to subprocess.run, shell=True is always set.
         """
+        assert "shell" not in kwargs, "shell argument has to be set to False"
         if self.within is not None:
             cmd = self.within.managed_decorate_shellcmd(cmd)
-        return sp.run(cmd, shell=True, executable=self.shell_executable, **kwargs)
+        return sp.run(self.shell_executable + [cmd], **kwargs)
 
     def managed_decorate_shellcmd(self, cmd: str) -> str:
         cmd = self.decorate_shellcmd(cmd)
