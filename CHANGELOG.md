@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.7](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.6...v0.7.7) (2025-09-19)
+
+
+### Bug Fixes
+
+* use EnvBase.run_cmd in test suite ([e46ee97](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/e46ee9785d1c105341834a416b526d684d52f5c4))
+
 ## [0.7.6](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.5...v0.7.6) (2025-09-19)
 
 
