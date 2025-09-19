@@ -140,6 +140,10 @@ class ShellExecutable:
     args: List[str]
     command_arg: str
 
+    @property
+    def name(self) -> str:
+        return Path(self.executable).name
+
     def run(self, cmd: str, **kwargs) -> sp.CompletedProcess:
         return sp.run(
             [self.executable] + self.args + [self.command_arg, cmd], **kwargs
