@@ -312,6 +312,16 @@ class PinnableEnvBase(EnvBase, ABC):
             self.pinfile_extension()
         )
 
+    def remove_pinfile(self) -> None:
+        """Remove the pinfile."""
+        if self.pinfile.exists():
+            try:
+                self.pinfile.unlink()
+            except Exception as e:
+                raise WorkflowError(
+                    f"Removal of pinfile {self.pinfile} failed: {e}"
+                ) from e
+
 
 class CacheableEnvBase(EnvBase, ABC):
     async def get_cache_assets(self) -> Iterable[str]: ...
@@ -340,7 +350,7 @@ class CacheableEnvBase(EnvBase, ABC):
                 except Exception as e:
                     raise WorkflowError(
                         f"Removal of cache asset {asset_path} for {self.spec} failed: {e}"
-                    )
+                    ) from e
 
 
 class DeployableEnvBase(EnvBase, ABC):
@@ -385,13 +395,13 @@ class DeployableEnvBase(EnvBase, ABC):
         try:
             self.remove()
         except Exception as e:
-            raise WorkflowError(f"Removal of {self.spec} failed: {e}")
+            raise WorkflowError(f"Removal of {self.spec} failed: {e}") from e
 
     async def managed_deploy(self) -> None:
         try:
             await self.deploy()
         except Exception as e:
-            raise WorkflowError(f"Deployment of {self.spec} failed: {e}")
+            raise WorkflowError(f"Deployment of {self.spec} failed: {e}") from e
 
     def deployment_hash(self) -> str:
         return self._managed_generic_hash("deployment_hash")
