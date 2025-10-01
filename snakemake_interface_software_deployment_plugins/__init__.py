@@ -169,6 +169,7 @@ class EnvBase(ABC):
         settings: Optional[SoftwareDeploymentSettingsBase],
         shell_executable: ShellExecutable,
         tempdir: Path,
+        source_cache: Path,
         cache_prefix: Path,
         deployment_prefix: Path,
         pinfile_prefix: Path,
@@ -178,6 +179,7 @@ class EnvBase(ABC):
         self.settings: Optional[SoftwareDeploymentSettingsBase] = settings
         self.shell_executable = shell_executable
         self.tempdir = tempdir
+        self.source_cache: Path = source_cache
         self._deployment_prefix: Path = deployment_prefix
         self._cache_prefix: Path = cache_prefix
         self._pinfile_prefix: Path = pinfile_prefix
