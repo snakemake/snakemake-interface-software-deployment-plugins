@@ -152,10 +152,12 @@ class TestSoftwareDeploymentBase(ABC):
         deployment_prefix = tmp_path / "deployments"
         cache_prefix = tmp_path / "cache"
         pinfile_prefix = tmp_path / "pinfiles"
+        source_cache = tmp_path / "source_cache"
         tempdir.mkdir(parents=True, exist_ok=True)
         deployment_prefix.mkdir(parents=True, exist_ok=True)
         cache_prefix.mkdir(parents=True, exist_ok=True)
         pinfile_prefix.mkdir(parents=True, exist_ok=True)
+        source_cache.mkdir(parents=True, exist_ok=True)
 
         return env_cls(
             spec=spec,
@@ -163,6 +165,7 @@ class TestSoftwareDeploymentBase(ABC):
             settings=self.get_settings(),
             shell_executable=self.shell_executable,
             tempdir=tempdir,
+            source_cache=source_cache,
             deployment_prefix=deployment_prefix,
             cache_prefix=cache_prefix,
             pinfile_prefix=pinfile_prefix,
