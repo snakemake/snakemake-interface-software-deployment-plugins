@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.8.0...v0.9.0) (2025-10-01)
+
+
+### Features
+
+* add source cache path attribute for mounting in e.g. containers ([#33](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/33)) ([7962913](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/796291391c670bb528327383799035d48cf06877))
+* allow removal of pinfile ([#31](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/31)) ([8e453b2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/8e453b242f1a2268daa160730099647adb9f9a5b))
+
 ## [0.8.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.7.7...v0.8.0) (2025-09-19)
 
 
