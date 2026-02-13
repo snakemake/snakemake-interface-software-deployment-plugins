@@ -59,6 +59,9 @@ class TestSoftwareDeploymentBase(ABC):
     @abstractmethod
     def get_settings_cls(self) -> Optional[Type[SoftwareDeploymentSettingsBase]]: ...
 
+    def get_within(self) -> Optional[EnvBase]:
+        return None
+
     def test_envspec_str(self):
         print("env spec", str(self.get_env_spec()))
 
@@ -169,6 +172,7 @@ class TestSoftwareDeploymentBase(ABC):
             deployment_prefix=deployment_prefix,
             cache_prefix=cache_prefix,
             pinfile_prefix=pinfile_prefix,
+            within=self.get_within(),
         )
 
     def _deploy(self, env: EnvBase, tmp_path):
