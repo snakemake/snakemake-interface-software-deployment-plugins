@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.9.1...v0.10.0) (2026-02-13)
+
+
+### Features
+
+* add get_within() method to TestSoftwareDeploymentBase ([1f990f1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/1f990f12b77b61f2a6f64a974b1c4b3819864196))
+
 ## [0.9.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.9.0...v0.9.1) (2026-02-13)
 
 
