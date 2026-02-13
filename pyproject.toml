@@ -6,7 +6,7 @@ description = "This package provides a stable interface for interactions between
 license = "MIT"
 name = "snakemake-interface-software-deployment-plugins"
 readme = "README.md"
-version = "0.9.0"
+version = "0.9.1"
 requires-python = ">=3.11,<4.0"
 dependencies = [
     "argparse-dataclass >=2.0.0,<3.0",
