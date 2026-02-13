@@ -20,8 +20,8 @@ class TestRegistry(TestRegistryBase):
 
     def validate_plugin(self, plugin: PluginBase):
         assert plugin.settings_cls is None
-        assert plugin.env_cls is not None
-        assert plugin.env_spec_cls is not None
+        assert plugin.env_cls is not None  # pyrefly: ignore[missing-attribute]
+        assert plugin.env_spec_cls is not None  # pyrefly: ignore[missing-attribute]
 
     def validate_settings(self, settings: SettingsBase, plugin: PluginBase):
         # assert isinstance(settings, plugin.settings_cls)
