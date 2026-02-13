@@ -180,7 +180,7 @@ class TestSoftwareDeploymentBase(ABC):
         tmp_path,
         within: Optional[EnvBase] = None,
     ) -> EnvBase:
-        tmp_name = env_cls.__name__
+        tmp_name = spec.module().__name__
 
         tempdir = tmp_path / tmp_name / "temp"
         deployment_prefix = tmp_path / tmp_name / "deployments"
@@ -211,4 +211,4 @@ class TestSoftwareDeploymentBase(ABC):
 
         assert isinstance(env, DeployableEnvBase)
         asyncio.run(env.deploy())
-        assert any((tmp_path / env.__class__.__name__ / "deployments").iterdir())
+        assert any((tmp_path / env.spec.module().__name__ / "deployments").iterdir())
