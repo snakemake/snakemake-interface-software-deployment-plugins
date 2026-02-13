@@ -59,7 +59,13 @@ class TestSoftwareDeploymentBase(ABC):
     @abstractmethod
     def get_settings_cls(self) -> Optional[Type[SoftwareDeploymentSettingsBase]]: ...
 
-    def get_within(self) -> Optional[EnvBase]:
+    def get_within_cls(self) -> Optional[Type[EnvBase]]:
+        return None
+
+    def get_within_spec(self) -> Optional[EnvSpecBase]:
+        return None
+
+    def get_within_settings(self) -> Optional[SoftwareDeploymentSettingsBase]:
         return None
 
     def test_envspec_str(self):
@@ -150,12 +156,37 @@ class TestSoftwareDeploymentBase(ABC):
     def _get_env(self, tmp_path) -> EnvBase:
         env_cls = self.get_env_cls()
         spec = self._get_cached_env_spec()
+        settings = self.get_settings()
 
-        tempdir = tmp_path / "temp"
-        deployment_prefix = tmp_path / "deployments"
-        cache_prefix = tmp_path / "cache"
-        pinfile_prefix = tmp_path / "pinfiles"
-        source_cache = tmp_path / "source_cache"
+        within_cls = self.get_within_cls()
+        if within_cls is not None:
+            within_spec = self.get_within_spec()
+            assert within_spec is not None, (
+                "error: if get_within_cls returns not None, get_within_spec may not return None"
+            )
+            within = self._get_env_by_cls(
+                within_cls, within_spec, self.get_within_settings(), tmp_path
+            )
+        else:
+            within = None
+
+        return self._get_env_by_cls(env_cls, spec, settings, tmp_path, within=within)
+
+    def _get_env_by_cls(
+        self,
+        env_cls: Type[EnvBase],
+        spec: EnvSpecBase,
+        settings: Optional[SoftwareDeploymentSettingsBase],
+        tmp_path,
+        within: Optional[EnvBase] = None,
+    ) -> EnvBase:
+        tmp_name = env_cls.__name__
+
+        tempdir = tmp_path / tmp_name / "temp"
+        deployment_prefix = tmp_path / tmp_name / "deployments"
+        cache_prefix = tmp_path / tmp_name / "cache"
+        pinfile_prefix = tmp_path / tmp_name / "pinfiles"
+        source_cache = tmp_path / tmp_name / "source_cache"
         tempdir.mkdir(parents=True, exist_ok=True)
         deployment_prefix.mkdir(parents=True, exist_ok=True)
         cache_prefix.mkdir(parents=True, exist_ok=True)
@@ -164,15 +195,14 @@ class TestSoftwareDeploymentBase(ABC):
 
         return env_cls(
             spec=spec,
-            within=None,
-            settings=self.get_settings(),
+            settings=settings,
             shell_executable=self.shell_executable,
             tempdir=tempdir,
             source_cache=source_cache,
             deployment_prefix=deployment_prefix,
             cache_prefix=cache_prefix,
             pinfile_prefix=pinfile_prefix,
-            within=self.get_within(),
+            within=within,
         )
 
     def _deploy(self, env: EnvBase, tmp_path):
