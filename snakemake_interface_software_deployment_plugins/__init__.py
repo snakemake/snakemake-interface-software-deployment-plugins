@@ -5,10 +5,12 @@ __license__ = "MIT"
 
 from abc import ABC, abstractmethod
 from copy import copy
+from inspect import getmodule
 from dataclasses import dataclass, field
 import hashlib
 from pathlib import Path
 import shutil
+from types import ModuleType
 from typing import (
     Any,
     ClassVar,
@@ -19,6 +21,7 @@ from typing import (
     Self,
     Tuple,
     Type,
+    TypeVar,
     Union,
 )
 import subprocess as sp
@@ -43,16 +46,22 @@ class EnvSpecSourceFile:
 
 
 class EnvSpecBase(ABC):
+    @classmethod
+    def module(cls) -> ModuleType:
+        class_module = getmodule(cls)
+        assert class_module is not None, f"bug: cannot detect class module of {cls}"
+        return class_module
+
     def technical_init(self):
         """This has to be called by Snakemake upon initialization"""
         self.within: Optional["EnvSpecBase"] = None
         self.fallback: Optional["EnvSpecBase"] = None
-        self.kind: str = self.__class__.__module__.common_settings.provides
+        self.kind: str = self.module().common_settings.provides
         self._obj_hash: Optional[int] = None
 
     @classmethod
     def env_cls(cls):
-        return cls.__module__.EnvBase
+        return cls.module().EnvBase
 
     @classmethod
     @abstractmethod
@@ -148,19 +157,11 @@ class ShellExecutable:
         return sp.run([self.executable] + self.args + [self.command_arg, cmd], **kwargs)
 
 
+TSettings = TypeVar("TSettings", bound="SoftwareDeploymentSettingsBase")
+
+
 class EnvBase(ABC):
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
-    spec: EnvSpecBase
-    within: Optional["EnvBase"]
-    settings: Optional[SoftwareDeploymentSettingsBase]
-    shell_executable: ShellExecutable
-    tempdir: Path
-    _cache_prefix: Path
-    _deployment_prefix: Path
-    _pinfile_prefix: Path
-    _managed_hash_store: Optional[str] = None
-    _managed_deployment_hash_store: Optional[str] = None
-    _obj_hash: Optional[int] = None
 
     def __init__(
         self,
@@ -174,8 +175,8 @@ class EnvBase(ABC):
         deployment_prefix: Path,
         pinfile_prefix: Path,
     ):
-        self.spec: EnvSpecBase = spec
-        self.within: Optional["EnvBase"] = within
+        self.spec = spec
+        self.within = within
         self.settings: Optional[SoftwareDeploymentSettingsBase] = settings
         self.shell_executable = shell_executable
         self.tempdir = tempdir
@@ -183,6 +184,9 @@ class EnvBase(ABC):
         self._deployment_prefix: Path = deployment_prefix
         self._cache_prefix: Path = cache_prefix
         self._pinfile_prefix: Path = pinfile_prefix
+        self._managed_hash_store: Optional[str] = None
+        self._managed_deployment_hash_store: Optional[str] = None
+        self._obj_hash: Optional[int] = None
         self.__post_init__()
 
     def __post_init__(self) -> None:  # noqa B027
