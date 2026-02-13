@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.9.0...v0.9.1) (2026-02-13)
+
+
+### Bug Fixes
+
+* typing, add pyrefly, migrate to pixi ([#34](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/34)) ([6532631](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/65326312670f2865d1433c7d71fb3ce32366fc9b))
+
 ## [0.9.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.8.0...v0.9.0) (2025-10-01)
 
 
