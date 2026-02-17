@@ -272,14 +272,18 @@ class EnvBase(ABC):
         return self._managed_generic_hash("hash")
 
     def _managed_generic_hash(self, kind: str) -> str:
-        store = getattr(self, f"_managed_{kind}_store")
+        store_attr = f"_managed_{kind}_store"
+        store = getattr(self, store_attr)
         if store is None:
             record_hash = f"record_{kind}"
             hash_object = hashlib.md5()
             if self.within is not None:
-                getattr(self.within, record_hash)(hash_object)
+                # For within, we always take the normal hash,
+                # since the deployment just runs within that.
+                self.within.record_hash(hash_object)
             getattr(self, record_hash)(hash_object)
             store = hash_object.hexdigest()
+            setattr(self, store_attr, store)
         return store
 
     def __hash__(self) -> int:
