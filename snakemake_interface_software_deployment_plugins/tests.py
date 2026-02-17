@@ -92,7 +92,7 @@ class TestSoftwareDeploymentBase(ABC):
         env = self._get_env(tmp_path)
         self._deploy(env, tmp_path)
         cmd = env.managed_decorate_shellcmd(self.get_test_cmd())
-        assert env.run_cmd(cmd).returncode == 0
+        assert self.shell_executable.run(cmd).returncode == 0
 
     def test_cache(self, tmp_path):
         env = self._get_env(tmp_path)
