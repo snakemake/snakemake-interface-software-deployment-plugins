@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.10.0...v0.10.1) (2026-02-17)
+
+
+### Bug Fixes
+
+* deployments path in test suite ([971dea2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/971dea2f0d0ad330765b7eccb7e2eaee056aa715))
+* hash building for enclosed environments and deployment test ([#38](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/38)) ([89d45d8](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/89d45d8a665639848dd2e1a76f2e5b9a6ea2ff06))
+* unique deployment path ([d953afe](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/d953afe4732b356d1b0f27469d4a3aaad56159b4))
+
 ## [0.10.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.9.1...v0.10.0) (2026-02-13)
 
 
