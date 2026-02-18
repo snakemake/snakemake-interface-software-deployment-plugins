@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.10.1...v0.10.2) (2026-02-18)
+
+
+### Bug Fixes
+
+* allow missing args argument for shell executable ([d7bca35](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/d7bca35b5f27058d3ef1011283b3752373970bef))
+
 ## [0.10.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.10.0...v0.10.1) (2026-02-17)
 
 
