@@ -146,8 +146,8 @@ class EnvSpecBase(ABC):
 @dataclass
 class ShellExecutable:
     executable: str
-    args: List[str]
     command_arg: str
+    args: List[str] = field(default_factory=list)
 
     @property
     def name(self) -> str:
