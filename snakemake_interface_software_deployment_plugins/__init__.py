@@ -1,3 +1,5 @@
+from typing import Generic
+
 __author__ = "Johannes Köster"
 __copyright__ = "Copyright 2024, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
@@ -23,6 +25,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    Callable,
 )
 import subprocess as sp
 
@@ -92,24 +95,32 @@ class EnvSpecBase(ABC):
             return True
         return False
 
-    def modify_source_paths(self, modify_func) -> Self:
+    def modify_source_paths(self, modify_func: Callable) -> Self:
+        return self._modify_attributes("source_path_attributes", modify_func)
+
+    def modify_identity_attributes(self, modify_func: Callable) -> Self:
+        return self._modify_attributes("identity_attributes", modify_func)
+
+    def _modify_attributes(self, attribute_method: str, modify_func: Callable) -> Self:
         if self.has_source_paths():
             self_or_copied = copy(self)
         else:
             return self
-        for attr_name in self_or_copied.source_path_attributes():
+        for attr_name in getattr(self_or_copied, attribute_method):
             current_value = getattr(self_or_copied, attr_name)
             if current_value is not None:
                 setattr(self_or_copied, attr_name, modify_func(current_value))
 
         if self_or_copied.within is not None:
-            self_or_copied.within = self_or_copied.within.modify_source_paths(
-                modify_func
+            self_or_copied.within = self_or_copied.within._modify_attributes(
+                attribute_method,
+                modify_func,
             )
 
         if self_or_copied.fallback is not None:
-            self_or_copied.fallback = self_or_copied.fallback.modify_source_paths(
-                modify_func
+            self_or_copied.fallback = self_or_copied.fallback._modify_attributes(
+                attribute_method,
+                modify_func,
             )
         return self_or_copied
 
@@ -160,14 +171,14 @@ class ShellExecutable:
 TSettings = TypeVar("TSettings", bound="SoftwareDeploymentSettingsBase")
 
 
-class EnvBase(ABC):
+class EnvBase(ABC, Generic[TSettings]):
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
 
     def __init__(
         self,
         spec: EnvSpecBase,
         within: Optional["EnvBase"],
-        settings: Optional[SoftwareDeploymentSettingsBase],
+        settings: Optional[TSettings],
         shell_executable: ShellExecutable,
         tempdir: Path,
         source_cache: Path,
@@ -177,7 +188,7 @@ class EnvBase(ABC):
     ):
         self.spec = spec
         self.within = within
-        self.settings: Optional[SoftwareDeploymentSettingsBase] = settings
+        self.settings: Optional[TSettings] = settings
         self.shell_executable = shell_executable
         self.tempdir = tempdir
         self.source_cache: Path = source_cache
