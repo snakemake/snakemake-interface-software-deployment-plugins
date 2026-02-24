@@ -168,18 +168,18 @@ class ShellExecutable:
         return sp.run([self.executable] + self.args + [self.command_arg, cmd], **kwargs)
 
 
-TSettings = TypeVar("TSettings", bound="SoftwareDeploymentSettingsBase")
+TSettings = TypeVar("TSettings", bound="Optional[SoftwareDeploymentSettingsBase]")
 TEnvSpec = TypeVar("TEnvSpec", bound="EnvSpecBase")
 
 
-class EnvBase(ABC, Generic[TSettings, TEnvSpec]):
+class EnvBase(ABC, Generic[TEnvSpec, TSettings]):
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
 
     def __init__(
         self,
         spec: TEnvSpec,
         within: Optional["EnvBase"],
-        settings: Optional[TSettings],
+        settings: TSettings,
         shell_executable: ShellExecutable,
         tempdir: Path,
         source_cache: Path,
@@ -189,7 +189,7 @@ class EnvBase(ABC, Generic[TSettings, TEnvSpec]):
     ):
         self.spec = spec
         self.within = within
-        self.settings: Optional[TSettings] = settings
+        self.settings: TSettings = settings
         self.shell_executable = shell_executable
         self.tempdir = tempdir
         self.source_cache: Path = source_cache
