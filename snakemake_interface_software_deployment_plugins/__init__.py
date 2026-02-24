@@ -169,14 +169,15 @@ class ShellExecutable:
 
 
 TSettings = TypeVar("TSettings", bound="SoftwareDeploymentSettingsBase")
+TEnvSpec = TypeVar("TEnvSpec", bound="EnvSpecBase")
 
 
-class EnvBase(ABC, Generic[TSettings]):
+class EnvBase(ABC, Generic[TSettings, TEnvSpec]):
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
 
     def __init__(
         self,
-        spec: EnvSpecBase,
+        spec: TEnvSpec,
         within: Optional["EnvBase"],
         settings: Optional[TSettings],
         shell_executable: ShellExecutable,
