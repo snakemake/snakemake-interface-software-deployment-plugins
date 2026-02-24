@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.10.2...v0.11.0) (2026-02-23)
+
+
+### Features
+
+* make EnvBase generic; enable EnvSpecBase recursive attribute modification ([1425a51](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/1425a516a5c7152bdb6e291d602247ab8e0b4412))
+
 ## [0.10.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.10.1...v0.10.2) (2026-02-18)
 
 
