@@ -187,7 +187,7 @@ class EnvBase(ABC, Generic[TEnvSpec, TSettings]):
         deployment_prefix: Path,
         pinfile_prefix: Path,
     ):
-        self.spec = spec
+        self.spec: TEnvSpec = spec
         self.within = within
         self.settings: TSettings = settings
         self.shell_executable = shell_executable
