@@ -1,5 +1,3 @@
-from typing import Generic
-
 __author__ = "Johannes Köster"
 __copyright__ = "Copyright 2024, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
@@ -23,15 +21,11 @@ from typing import (
     Self,
     Tuple,
     Type,
-    TypeVar,
     Union,
     Callable,
 )
 import subprocess as sp
 
-from snakemake_interface_software_deployment_plugins.settings import (
-    SoftwareDeploymentSettingsBase,
-)
 from snakemake_interface_common.exceptions import WorkflowError
 
 
@@ -63,8 +57,14 @@ class EnvSpecBase(ABC):
         self._obj_hash: Optional[int] = None
 
     @classmethod
-    def env_cls(cls):
-        return cls.module().EnvBase
+    def env_cls(cls) -> Type["EnvBase"]:
+        try:
+            return cls.module().EnvBase
+        except AttributeError:
+            raise AttributeError(
+                "No class Env found next to EnvSpec class. "
+                "Make sure to import or define it there."
+            )
 
     @classmethod
     @abstractmethod
@@ -168,18 +168,14 @@ class ShellExecutable:
         return sp.run([self.executable] + self.args + [self.command_arg, cmd], **kwargs)
 
 
-TSettings = TypeVar("TSettings", bound="Optional[SoftwareDeploymentSettingsBase]")
-TEnvSpec = TypeVar("TEnvSpec", bound="EnvSpecBase")
-
-
-class EnvBase(ABC, Generic[TEnvSpec, TSettings]):
+class EnvBase(ABC):
     _cache: ClassVar[Dict[Tuple[Type["EnvBase"], Optional["EnvBase"]], Any]] = {}
 
     def __init__(
         self,
-        spec: TEnvSpec,
+        spec,
         within: Optional["EnvBase"],
-        settings: TSettings,
+        settings,
         shell_executable: ShellExecutable,
         tempdir: Path,
         source_cache: Path,
@@ -187,9 +183,10 @@ class EnvBase(ABC, Generic[TEnvSpec, TSettings]):
         deployment_prefix: Path,
         pinfile_prefix: Path,
     ):
-        self.spec: TEnvSpec = spec
+        # type annotation for spec and settings is left for implementing plugins
+        self.spec = spec
         self.within = within
-        self.settings: TSettings = settings
+        self.settings = settings
         self.shell_executable = shell_executable
         self.tempdir = tempdir
         self.source_cache: Path = source_cache
