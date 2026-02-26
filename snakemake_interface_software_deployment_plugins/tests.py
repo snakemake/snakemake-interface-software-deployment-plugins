@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import asyncio
 from copy import deepcopy
 from typing import Optional, Type
+import os
 
 import pytest
 
@@ -186,19 +187,17 @@ class TestSoftwareDeploymentBase(ABC):
         deployment_prefix = tmp_path / tmp_name / "deployments"
         cache_prefix = tmp_path / tmp_name / "cache"
         pinfile_prefix = tmp_path / tmp_name / "pinfiles"
-        source_cache = tmp_path / tmp_name / "source_cache"
         tempdir.mkdir(parents=True, exist_ok=True)
         deployment_prefix.mkdir(parents=True, exist_ok=True)
         cache_prefix.mkdir(parents=True, exist_ok=True)
         pinfile_prefix.mkdir(parents=True, exist_ok=True)
-        source_cache.mkdir(parents=True, exist_ok=True)
 
         return env_cls(
             spec=spec,
             settings=settings,
             shell_executable=self.shell_executable,
             tempdir=tempdir,
-            source_cache=source_cache,
+            mountpoints=[Path(os.getcwd())],
             deployment_prefix=deployment_prefix,
             cache_prefix=cache_prefix,
             pinfile_prefix=pinfile_prefix,
