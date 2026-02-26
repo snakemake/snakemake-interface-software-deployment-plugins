@@ -177,8 +177,8 @@ class EnvBase(ABC):
         within: Optional["EnvBase"],
         settings,
         shell_executable: ShellExecutable,
+        mountpoints: List[Path],
         tempdir: Path,
-        source_cache: Path,
         cache_prefix: Path,
         deployment_prefix: Path,
         pinfile_prefix: Path,
@@ -188,8 +188,8 @@ class EnvBase(ABC):
         self.within = within
         self.settings = settings
         self.shell_executable = shell_executable
+        self.mountpoints = mountpoints
         self.tempdir = tempdir
-        self.source_cache: Path = source_cache
         self._deployment_prefix: Path = deployment_prefix
         self._cache_prefix: Path = cache_prefix
         self._pinfile_prefix: Path = pinfile_prefix
