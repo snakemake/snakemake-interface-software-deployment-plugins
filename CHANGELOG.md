@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.12.1...v0.13.0) (2026-02-26)
+
+
+### Features
+
+* add method to check whether environment contains a specific executable ([b81bdd7](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/b81bdd7f96c28178f0a4278942486e8c478a0710))
+
 ## [0.12.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.12.0...v0.12.1) (2026-02-26)
 
 
