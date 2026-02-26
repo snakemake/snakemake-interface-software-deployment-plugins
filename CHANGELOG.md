@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.12.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.11.0...v0.12.0) (2026-02-26)
+
+
+### Features
+
+* make env spec generic ([c7b9971](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/c7b9971d779909081e50b45ff5f858e67435bd08))
+
+
+### Bug Fixes
+
+* make generic args more flexible ([af21397](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/af21397717e9400c5a335f3fde5950b9f522626c))
+* relax typing ([0f10324](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/0f10324da494b2fe4b46616aa283abd7f96dcc09))
+* simplify mountpoint information into self.mountpoints, complemented by self.tempdir holding the temporary directory to use ([7112ee6](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/7112ee6bb5eed944dab7da90a30255431b0042bd))
+
 ## [0.11.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.10.2...v0.11.0) (2026-02-23)
 
 
