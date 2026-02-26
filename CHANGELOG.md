@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.12.0...v0.12.1) (2026-02-26)
+
+
+### Bug Fixes
+
+* use proper args when calling env class ([5cc8b96](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/5cc8b960385061ebb8b0b9e73254cf854115adb4))
+
 ## [0.12.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.11.0...v0.12.0) (2026-02-26)
 
 
