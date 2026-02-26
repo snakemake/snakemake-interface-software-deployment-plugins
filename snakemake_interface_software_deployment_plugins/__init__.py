@@ -225,6 +225,10 @@ class EnvBase(ABC):
         """
         ...
 
+    @abstractmethod
+    def contains_executable(self, executable: str) -> bool:
+        ...
+
     def is_deployable(self) -> bool:
         """Overwrite this in case the deployability of the environment depends on
         the spec or settings."""
