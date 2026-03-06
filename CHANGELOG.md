@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.14.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.13.0...v0.14.0) (2026-03-06)
+
+
+### Features
+
+* cache individual assets on the snakemake side of the API ([4f3ce17](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/4f3ce176bd4431be5992ef8c008da6b4a36f72db))
+* ensure that caching happens race condition free on shared network filesystems ([c2b3d4d](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/c2b3d4d4d5dc9f9adddb3f716f78972591215a7a))
+* more convenient cache API ([0a3228b](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/0a3228bc76a81e27f0c15d7ce4735d1bf30c7ead))
+
 ## [0.13.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.12.1...v0.13.0) (2026-02-26)
 
 
