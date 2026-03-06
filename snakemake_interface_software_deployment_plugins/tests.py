@@ -103,11 +103,11 @@ class TestSoftwareDeploymentBase(ABC):
 
         assert isinstance(env, CacheableEnvBase)
 
-        async def cache_assets():
-            for asset in env.get_cache_assets():
+        async def cache_assets(env):
+            for asset in await env.get_cache_assets():
                 await env.managed_cache_asset(asset)
 
-        asyncio.run(cache_assets())
+        asyncio.run(cache_assets(env))
 
         self._deploy(env, tmp_path)
 

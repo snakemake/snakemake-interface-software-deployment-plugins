@@ -350,8 +350,7 @@ class CacheableEnvBase(EnvBase, ABC):
 
     @abstractmethod
     async def cache_asset(self, asset: str) -> None:
-        """Retrieve/create and store given asset to self.cache_path.
-        """
+        """Retrieve/create and store given asset to self.cache_path."""
         ...
 
     async def managed_cache_asset(self, asset: str) -> None:
