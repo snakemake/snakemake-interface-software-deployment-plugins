@@ -354,10 +354,9 @@ class CacheableEnvBase(EnvBase, ABC):
         """
         ...
 
-    async def managed_cache_assets(self) -> None:
+    async def managed_cache_asset(self, asset: str) -> None:
         try:
-            for asset in await self.get_cache_assets():
-                await self.cache_asset(asset)
+            await self.cache_asset(asset)
         except Exception as e:
             raise WorkflowError(f"Caching of {self.spec} failed: {e}") from e
 
