@@ -349,11 +349,17 @@ class CacheableEnvBase(EnvBase, ABC):
     async def get_cache_assets(self) -> Iterable[str]: ...
 
     @abstractmethod
-    async def cache_assets(self) -> None:
-        """Determine environment assets and store any associated information or data to
-        self.cache_path.
+    async def cache_asset(self, asset: str) -> None:
+        """Retrieve/create and store given asset to self.cache_path.
         """
         ...
+
+    async def managed_cache_assets(self) -> None:
+        try:
+            for asset in await self.get_cache_assets():
+                await self.cache_asset(asset)
+        except Exception as e:
+            raise WorkflowError(f"Caching of {self.spec} failed: {e}") from e
 
     @property
     def cache_path(self) -> Path:
