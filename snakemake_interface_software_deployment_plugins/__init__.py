@@ -1,3 +1,6 @@
+import tempfile
+import os
+
 __author__ = "Johannes Köster"
 __copyright__ = "Copyright 2024, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
@@ -349,14 +352,29 @@ class CacheableEnvBase(EnvBase, ABC):
     async def get_cache_assets(self) -> Iterable[str]: ...
 
     @abstractmethod
-    async def cache_asset(self, asset: str) -> None:
+    async def cache_asset(self, asset: str, to_path: Path) -> None:
         """Retrieve/create and store given asset to self.cache_path."""
         ...
 
     async def managed_cache_asset(self, asset: str) -> None:
+        # The naming scheme used here follows the same pattern as rsync.
+        # This way, we benefit from rsync specific optimizations in network
+        # filtesystems like GlusterFS (see
+        # https://developers.redhat.com/blog/2018/08/14/improving-rsync-performance-with-glusterfs)
+        _, tmp_cache_path = tempfile.mkstemp(
+            prefix=asset, suffix=".part", dir=self.cache_path
+        )
+        tmp_cache_path = Path(tmp_cache_path)
+        cache_path = self.cache_path / asset
         try:
-            await self.cache_asset(asset)
+            await self.cache_asset(asset, tmp_cache_path)
+            os.replace(tmp_cache_path, cache_path)
         except Exception as e:
+            if tmp_cache_path.exists():
+                try:
+                    tmp_cache_path.unlink()
+                except Exception:
+                    pass
             raise WorkflowError(f"Caching of {self.spec} failed: {e}") from e
 
     @property
