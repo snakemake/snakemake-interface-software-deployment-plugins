@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.15.0...v0.16.0) (2026-03-08)
+
+
+### Features
+
+* allow cached attribute upon initialization ([895ad9d](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/895ad9d1f4ca2eaa9e1e275f0281e1ada5ba2f81))
+
 ## [0.15.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.14.0...v0.15.0) (2026-03-08)
 
 
