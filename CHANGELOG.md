@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.14.0...v0.15.0) (2026-03-08)
+
+
+### Features
+
+* add test method for contains_executable method of EnvBase ([388cb23](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/388cb23b31cc69279026ad74aeda428074b9e2e4))
+
 ## [0.14.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.13.0...v0.14.0) (2026-03-06)
 
 
