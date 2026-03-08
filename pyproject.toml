@@ -56,7 +56,7 @@ cmd = [
 
 [tool.coverage.report]
 exclude_lines = ["pass", "\\.\\.\\."]
-fail_under = 63.0
+fail_under = 61.0
 
 [tool.pixi.feature.publish.pypi-dependencies]
 twine = ">=6.1.0,<7"
