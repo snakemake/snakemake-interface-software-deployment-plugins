@@ -61,6 +61,9 @@ class TestSoftwareDeploymentBase(ABC):
     @abstractmethod
     def get_settings_cls(self) -> Optional[Type[SoftwareDeploymentSettingsBase]]: ...
 
+    @abstractmethod
+    def get_contained_executable(self) -> str: ...
+
     def get_within_cls(self) -> Optional[Type[EnvBase]]:
         return None
 
@@ -69,6 +72,11 @@ class TestSoftwareDeploymentBase(ABC):
 
     def get_within_settings(self) -> Optional[SoftwareDeploymentSettingsBase]:
         return None
+
+    def test_contains_executable(self, tmp_path) -> None:
+        env = self._get_env(tmp_path)
+        self._deploy(env, tmp_path)
+        assert env.contains_executable(self.get_contained_executable())
 
     def test_envspec_str(self):
         print("env spec", str(self.get_env_spec()))
