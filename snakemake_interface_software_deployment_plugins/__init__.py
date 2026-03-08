@@ -30,13 +30,7 @@ from typing import (
 import subprocess as sp
 
 from snakemake_interface_common.exceptions import WorkflowError
-
-
-@dataclass
-class SoftwareReport:
-    name: str
-    version: Optional[str] = None
-    is_secondary: bool = False
+from snakemake_interface_common.software import SoftwareReport
 
 
 @dataclass

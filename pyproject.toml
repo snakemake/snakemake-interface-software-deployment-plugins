@@ -10,7 +10,7 @@ version = "0.15.0"
 requires-python = ">=3.11,<4.0"
 dependencies = [
     "argparse-dataclass >=2.0.0,<3.0",
-    "snakemake-interface-common >=1.17.4,<2.0.0"
+    "snakemake-interface-common >=1.23.0,<2.0.0"
 ]
 
 [project.urls]
