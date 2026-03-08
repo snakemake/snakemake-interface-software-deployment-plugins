@@ -42,7 +42,7 @@ class SoftwareReport:
 @dataclass
 class EnvSpecSourceFile:
     path_or_uri: Union[str, Path]
-    cached: Optional[Path] = field(init=False, repr=False, default=None)
+    cached: Optional[Path] = field(repr=False, default=None)
 
 
 class EnvSpecBase(ABC):
