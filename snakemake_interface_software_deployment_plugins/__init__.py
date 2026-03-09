@@ -64,7 +64,7 @@ class EnvSpecBase(ABC):
     @classmethod
     def env_cls(cls) -> Type["EnvBase"]:
         try:
-            return cls.module().EnvBase
+            return cls.module().Env
         except AttributeError:
             raise AttributeError(
                 "No class Env found next to EnvSpec class. "
