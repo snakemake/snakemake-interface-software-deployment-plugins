@@ -103,7 +103,7 @@ class EnvSpecBase(ABC):
             self_or_copied = copy(self)
         else:
             return self
-        for attr_name in getattr(self_or_copied, attribute_method):
+        for attr_name in getattr(self_or_copied, attribute_method)():
             current_value = getattr(self_or_copied, attr_name)
             if current_value is not None:
                 setattr(self_or_copied, attr_name, modify_func(current_value))
