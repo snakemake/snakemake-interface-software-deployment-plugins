@@ -38,6 +38,14 @@ class EnvSpecSourceFile:
     path_or_uri: Union[str, Path]
     cached: Optional[Path] = field(repr=False, default=None)
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, EnvSpecSourceFile):
+            return False
+        return self.path_or_uri == other.path_or_uri
+
+    def __hash__(self) -> int:
+        return hash(self.path_or_uri)
+
 
 class EnvSpecBase(ABC):
     @classmethod
