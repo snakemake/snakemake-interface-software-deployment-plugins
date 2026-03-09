@@ -1,3 +1,5 @@
+from snakemake_interface_software_deployment_plugins import EnvSpecSourceFile
+from pathlib import Path
 from typing import List
 from snakemake_interface_software_deployment_plugins.registry import (
     SoftwareDeploymentPluginRegistry,
@@ -29,3 +31,7 @@ class TestRegistry(TestRegistryBase):
 
     def get_example_args(self) -> List[str]:
         return []
+
+
+def test_env_spec_source_file():
+    EnvSpecSourceFile(path_or_uri="test.yaml", cached=Path("test.yaml"))
