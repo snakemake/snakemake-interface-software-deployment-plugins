@@ -187,7 +187,7 @@ class EnvBase(ABC):
         cache_prefix: Path,
         deployment_prefix: Path,
         pinfile_prefix: Path,
-    ):
+    ) -> None:
         # type annotation for spec and settings is left for implementing plugins
         self.spec = spec
         self.within = within
