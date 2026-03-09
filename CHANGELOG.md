@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.16.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.1...v0.16.2) (2026-03-09)
+
+
+### Bug Fixes
+
+* call identity attribute method ([33f7a56](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/33f7a56c83d84459d5616fc3f20cb5b704f64ad0))
+* make EnvSpecSourceFile hashable and comparable ([b6b6dc9](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/b6b6dc9f594e1b07818371b1df09461fdc0795e4))
+
 ## [0.16.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.0...v0.16.1) (2026-03-08)
 
 
