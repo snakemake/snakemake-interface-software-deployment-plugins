@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.2...v0.16.3) (2026-03-09)
+
+
+### Bug Fixes
+
+* return Env class from EnvSpec ([4cecce6](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/4cecce6a7f6271915e189ca7bb83f78cd51b76ab))
+
 ## [0.16.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.1...v0.16.2) (2026-03-09)
 
 
