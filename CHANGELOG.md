@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.0...v0.16.1) (2026-03-08)
+
+
+### Bug Fixes
+
+* use SoftwareReport from snakemake-interface-common ([09d79f0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/09d79f0aface540b53378e1c29a62700e74b312f))
+
 ## [0.16.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.15.0...v0.16.0) (2026-03-08)
 
 
