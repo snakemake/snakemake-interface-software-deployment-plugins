@@ -15,6 +15,7 @@ dependencies = [
 
 [project.urls]
 repository = "https://github.com/snakemake/snakemake-interface-software-deployment-plugins"
+homepage = "https://snakemake.github.io"
 
 [build-system]
 requires = ["hatchling"]
