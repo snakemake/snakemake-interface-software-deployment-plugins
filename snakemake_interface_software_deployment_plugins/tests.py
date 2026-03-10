@@ -1,3 +1,4 @@
+from typing import List
 from pathlib import Path
 from abc import ABC, abstractmethod
 import asyncio
@@ -179,12 +180,20 @@ class TestSoftwareDeploymentBase(ABC):
                 "error: if get_within_cls returns not None, get_within_spec may not return None"
             )
             within = self._get_env_by_cls(
-                within_cls, within_spec, self.get_within_settings(), tmp_path
+                within_cls,
+                within_spec,
+                self.get_within_settings(),
+                tmp_path,
+                mountpoints=[self.get_provider_prefix(spec, tmp_path)],
             )
         else:
             within = None
 
         return self._get_env_by_cls(env_cls, spec, settings, tmp_path, within=within)
+
+    def get_provider_prefix(self, spec: EnvSpecBase, tmp_path) -> Path:
+        provider = spec.module().__name__
+        return tmp_path / provider
 
     def _get_env_by_cls(
         self,
@@ -192,16 +201,17 @@ class TestSoftwareDeploymentBase(ABC):
         spec: EnvSpecBase,
         settings: Optional[SoftwareDeploymentSettingsBase],
         tmp_path,
+        mountpoints: List[Path] = [],
         within: Optional[EnvBase] = None,
     ) -> EnvBase:
-        provider = spec.module().__name__
-
         # tempdir should not be env provider specific but global
         tempdir = tmp_path / "temp"
+
         # everything below is env provider specific
-        deployment_prefix = tmp_path / provider / "deployments"
-        cache_prefix = tmp_path / provider / "cache"
-        pinfile_prefix = tmp_path / provider / "pinfiles"
+        provider_prefix = self.get_provider_prefix(spec, tmp_path)
+        deployment_prefix = provider_prefix / "deployments"
+        cache_prefix = provider_prefix / "cache"
+        pinfile_prefix = provider_prefix / "pinfiles"
 
         tempdir.mkdir(parents=True, exist_ok=True)
         deployment_prefix.mkdir(parents=True, exist_ok=True)
@@ -213,7 +223,7 @@ class TestSoftwareDeploymentBase(ABC):
             settings=settings,
             shell_executable=self.shell_executable,
             tempdir=tempdir,
-            mountpoints=[Path(os.getcwd())],
+            mountpoints=[Path(os.getcwd())] + mountpoints,
             deployment_prefix=deployment_prefix,
             cache_prefix=cache_prefix,
             pinfile_prefix=pinfile_prefix,
