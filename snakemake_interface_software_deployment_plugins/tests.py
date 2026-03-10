@@ -194,12 +194,15 @@ class TestSoftwareDeploymentBase(ABC):
         tmp_path,
         within: Optional[EnvBase] = None,
     ) -> EnvBase:
-        tmp_name = spec.module().__name__
+        provider = spec.module().__name__
 
-        tempdir = tmp_path / tmp_name / "temp"
-        deployment_prefix = tmp_path / tmp_name / "deployments"
-        cache_prefix = tmp_path / tmp_name / "cache"
-        pinfile_prefix = tmp_path / tmp_name / "pinfiles"
+        # tempdir should not be env provider specific but global
+        tempdir = tmp_path / "temp"
+        # everything below is env provider specific
+        deployment_prefix = tmp_path / provider / "deployments"
+        cache_prefix = tmp_path / provider / "cache"
+        pinfile_prefix = tmp_path / provider / "pinfiles"
+
         tempdir.mkdir(parents=True, exist_ok=True)
         deployment_prefix.mkdir(parents=True, exist_ok=True)
         cache_prefix.mkdir(parents=True, exist_ok=True)
