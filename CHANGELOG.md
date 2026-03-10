@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.5...v0.17.0) (2026-03-10)
+
+
+### Features
+
+* allow to select whether within env shall be included in hash ([8b9291d](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/8b9291daddf7a70ddba080ae9ac268a35c8417e1))
+
 ## [0.16.5](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.4...v0.16.5) (2026-03-10)
 
 
