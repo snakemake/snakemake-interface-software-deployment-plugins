@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.5](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.4...v0.16.5) (2026-03-10)
+
+
+### Bug Fixes
+
+* improved mountpoint handling ([2362a04](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/2362a04209a109e217d6aa7583b6a52bb7db8692))
+
 ## [0.16.4](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.3...v0.16.4) (2026-03-10)
 
 
