@@ -193,7 +193,7 @@ class EnvBase(ABC):
         self.within = within
         self.settings = settings
         self.shell_executable = shell_executable
-        self.mountpoints = mountpoints
+        self.mountpoints = [mountpoint.absolute() for mountpoint in mountpoints]
         self.tempdir = tempdir
         self._deployment_prefix: Path = deployment_prefix
         self._cache_prefix: Path = cache_prefix
@@ -285,16 +285,28 @@ class EnvBase(ABC):
             cmd = self.within.managed_decorate_shellcmd(cmd)
         return cmd
 
+    def hash_include_within(self) -> bool:
+        """Return whether the hash of the environment should also reflect the "within"
+        environment. Usually, this should be the case, unless you have a particular
+        reason. For the conda plugin, we overwrite this in case of containerized
+        environments.
+        """
+        return True
+
     def hash(self) -> str:
         return self._managed_generic_hash("hash")
+
+    def clear_hashes(self) -> None:
+        self._managed_hash_store = None
+        self._managed_deployment_hash_store = None
 
     def _managed_generic_hash(self, kind: str) -> str:
         store_attr = f"_managed_{kind}_store"
         store = getattr(self, store_attr)
         if store is None:
             record_hash = f"record_{kind}"
-            hash_object = hashlib.md5()
-            if self.within is not None:
+            hash_object = hashlib.md5(usedforsecurity=False)
+            if self.within is not None and self.hash_include_within():
                 # For within, we always take the normal hash,
                 # since the deployment just runs within that.
                 self.within.record_hash(hash_object)

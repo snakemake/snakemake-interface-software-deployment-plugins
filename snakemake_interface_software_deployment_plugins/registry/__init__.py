@@ -36,9 +36,7 @@ class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
         return Plugin(
             _name=name,
             common_settings=module.common_settings,
-            _software_deployment_settings_cls=getattr(
-                module, "SoftwareDeploymentSettings", None
-            ),
+            _software_deployment_settings_cls=getattr(module, "Settings", None),
             _env_cls=module.EnvBase,
             _env_spec_cls=module.EnvSpecBase,
         )
@@ -50,7 +48,7 @@ class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
                 mode=AttributeMode.REQUIRED,
                 kind=AttributeKind.OBJECT,
             ),
-            "SoftwareDeploymentSettings": AttributeType(
+            "Settings": AttributeType(
                 cls=SoftwareDeploymentSettingsBase,
                 mode=AttributeMode.OPTIONAL,
                 kind=AttributeKind.CLASS,
