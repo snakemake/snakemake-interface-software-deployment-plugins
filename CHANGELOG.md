@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.4](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.3...v0.16.4) (2026-03-10)
+
+
+### Bug Fixes
+
+* temp handling in test suite ([3e0c64b](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/3e0c64b98023332e86aeea3f48ffb3fbe03c20b7))
+
 ## [0.16.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.2...v0.16.3) (2026-03-09)
 
 
