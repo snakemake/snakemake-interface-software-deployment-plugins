@@ -1,3 +1,4 @@
+from typing import Union
 from typing import List
 from pathlib import Path
 from abc import ABC, abstractmethod
@@ -171,7 +172,8 @@ class TestSoftwareDeploymentBase(ABC):
                         source_file.suffix_replacement.old_suffixes,
                         source_file.suffix_replacement.new_suffix,
                     )
-                source_file.cached = source_file.path_or_uri
+                    source_file.suffix_replacement = None
+                source_file.cached = Path(source_file.path_or_uri)
         return spec
 
     def _get_env(self, tmp_path) -> EnvBase:
@@ -245,8 +247,9 @@ class TestSoftwareDeploymentBase(ABC):
         assert any((tmp_path / env.spec.module().__name__ / "deployments").iterdir())
 
 
-def _replace_suffix(path: str, suffix: List[str], replacement: str) -> Optional[str]:
+def _replace_suffix(path: Union[Path, str], suffix: List[str], replacement: str) -> str:
+    path = str(path)
     for suff in suffix:
         if path.endswith(suff):
             return path[: -len(suff)] + replacement
-    return None
+    raise ValueError(f"Path {path} does not end with any of the suffixes {suffix}")
