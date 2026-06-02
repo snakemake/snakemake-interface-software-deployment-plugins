@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.1...v0.18.2) (2026-06-02)
+
+
+### Bug Fixes
+
+* suffix replacement Path handling ([7e9f39f](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/7e9f39f9bac6e80a870b2cc2088280b619331e2c))
+
 ## [0.18.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.0...v0.18.1) (2026-06-02)
 
 
