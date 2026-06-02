@@ -34,8 +34,15 @@ from snakemake_interface_common.software import SoftwareReport
 
 
 @dataclass
+class SuffixReplacement:
+    old_suffixes: List[str]
+    new_suffix: str
+
+
+@dataclass
 class EnvSpecSourceFile:
     path_or_uri: Union[str, Path]
+    suffix_replacement: Optional[SuffixReplacement] = None
     cached: Optional[Path] = field(repr=False, default=None)
 
     def __eq__(self, other) -> bool:
@@ -45,6 +52,16 @@ class EnvSpecSourceFile:
 
     def __hash__(self) -> int:
         return hash(self.path_or_uri)
+
+    def replace_suffix(self, suffixes: List[str], new_suffix: str) -> "EnvSpecSourceFile":
+        if self.suffix_replacement is not None:
+            raise ValueError("Suffix replacement already defined for this source file.")
+        return EnvSpecSourceFile(
+            path_or_uri=self.path_or_uri,
+            suffix_replacement=SuffixReplacement(
+                old_suffixes=suffixes, new_suffix=new_suffix
+            ),
+        )
 
 
 class EnvSpecBase(ABC):
@@ -306,6 +323,7 @@ class EnvBase(ABC):
         if store is None:
             record_hash = f"record_{kind}"
             hash_object = hashlib.md5(usedforsecurity=False)
+            breakpoint()
             if self.within is not None and self.hash_include_within():
                 # For within, we always take the normal hash,
                 # since the deployment just runs within that.
