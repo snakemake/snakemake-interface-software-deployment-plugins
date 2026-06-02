@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.0...v0.18.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* handle suffix replacement in test suite ([8197cfa](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/8197cfa37baa10852f0ac40944963e821fc25df0))
+
 ## [0.18.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.17.0...v0.18.0) (2026-06-02)
 
 
