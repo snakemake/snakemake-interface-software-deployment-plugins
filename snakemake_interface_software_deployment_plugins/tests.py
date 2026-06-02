@@ -165,6 +165,12 @@ class TestSoftwareDeploymentBase(ABC):
         for attr in spec.source_path_attributes():
             source_file = getattr(spec, attr)
             if source_file is not None:
+                if source_file.suffix_replacement is not None:
+                    source_file.path_or_uri = _replace_suffix(
+                        source_file.path_or_uri,
+                        source_file.suffix_replacement.old_suffixes,
+                        source_file.suffix_replacement.new_suffix,
+                    )
                 source_file.cached = source_file.path_or_uri
         return spec
 
@@ -237,3 +243,10 @@ class TestSoftwareDeploymentBase(ABC):
         assert isinstance(env, DeployableEnvBase)
         asyncio.run(env.deploy())
         assert any((tmp_path / env.spec.module().__name__ / "deployments").iterdir())
+
+
+def _replace_suffix(path: str, suffix: List[str], replacement: str) -> Optional[str]:
+    for suff in suffix:
+        if path.endswith(suff):
+            return path[: -len(suff)] + replacement
+    return None
