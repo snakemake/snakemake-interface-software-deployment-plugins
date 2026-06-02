@@ -53,7 +53,9 @@ class EnvSpecSourceFile:
     def __hash__(self) -> int:
         return hash(self.path_or_uri)
 
-    def replace_suffix(self, suffixes: List[str], new_suffix: str) -> "EnvSpecSourceFile":
+    def replace_suffix(
+        self, suffixes: List[str], new_suffix: str
+    ) -> "EnvSpecSourceFile":
         if self.suffix_replacement is not None:
             raise ValueError("Suffix replacement already defined for this source file.")
         return EnvSpecSourceFile(
