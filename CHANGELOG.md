@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.17.0...v0.18.0) (2026-06-02)
+
+
+### Features
+
+* suffix replacement ([#54](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/54)) ([6282e25](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/6282e25b76e389b35921971447b9fdc6af4abcd6))
+
+
+### Bug Fixes
+
+* remove debug code ([ffa0804](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/ffa08047257ee3e3e90cde1fe53a5e202c18b02a))
+
 ## [0.17.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.16.5...v0.17.0) (2026-03-10)
 
 
