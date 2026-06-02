@@ -325,7 +325,6 @@ class EnvBase(ABC):
         if store is None:
             record_hash = f"record_{kind}"
             hash_object = hashlib.md5(usedforsecurity=False)
-            breakpoint()
             if self.within is not None and self.hash_include_within():
                 # For within, we always take the normal hash,
                 # since the deployment just runs within that.
