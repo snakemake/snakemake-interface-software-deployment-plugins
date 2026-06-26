@@ -37,8 +37,8 @@ class SoftwareDeploymentPluginRegistry(PluginRegistryBase):
             _name=name,
             common_settings=module.common_settings,
             _software_deployment_settings_cls=getattr(module, "Settings", None),
-            _env_cls=module.EnvBase,
-            _env_spec_cls=module.EnvSpecBase,
+            _env_cls=module.Env,
+            _env_spec_cls=module.EnvSpec,
         )
 
     def expected_attributes(self) -> Mapping[str, AttributeType]:
