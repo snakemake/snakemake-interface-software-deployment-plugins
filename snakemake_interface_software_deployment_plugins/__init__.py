@@ -343,7 +343,6 @@ class EnvBase(ABC):
     def __eq__(self, other) -> bool:
         return (
             self.__class__ == other.__class__
-            and self.spec == other.spec
             and self.hash() == other.hash()
         )
 
