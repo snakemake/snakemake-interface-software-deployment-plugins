@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.4](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.3...v0.18.4) (2026-07-24)
+
+
+### Bug Fixes
+
+* close temp file after creation ([9fa7730](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/9fa7730b2a4f305a9a2ae3f667f0e673c618d336))
+
 ## [0.18.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.2...v0.18.3) (2026-06-26)
 
 
