@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.2...v0.18.3) (2026-06-26)
+
+
+### Bug Fixes
+
+* load concrete Env/EnvSpec classes instead of abstract bases ([#58](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/58)) ([78c2d62](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/78c2d62c4a1f184b881f702d728da231b4ae1c0e))
+
 ## [0.18.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.1...v0.18.2) (2026-06-02)
 
 
