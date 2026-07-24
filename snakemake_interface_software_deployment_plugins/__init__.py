@@ -394,9 +394,10 @@ class CacheableEnvBase(EnvBase, ABC):
         # This way, we benefit from rsync specific optimizations in network
         # filtesystems like GlusterFS (see
         # https://developers.redhat.com/blog/2018/08/14/improving-rsync-performance-with-glusterfs)
-        _, tmp_cache_path = tempfile.mkstemp(
+        fd, tmp_cache_path = tempfile.mkstemp(
             prefix=asset, suffix=".part", dir=self.cache_path
         )
+        os.close(fd)
         tmp_cache_path = Path(tmp_cache_path)
         cache_path = self.cache_path / asset
         try:
