@@ -343,10 +343,7 @@ class EnvBase(ABC):
         return self._obj_hash
 
     def __eq__(self, other) -> bool:
-        return (
-            self.__class__ == other.__class__
-            and self.hash() == other.hash()
-        )
+        return self.__class__ == other.__class__ and self.hash() == other.hash()
 
 
 class PinnableEnvBase(EnvBase, ABC):
