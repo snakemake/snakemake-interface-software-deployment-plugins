@@ -126,27 +126,28 @@ class EnvSpecBase(ABC):
         return self._modify_attributes("identity_attributes", modify_func)
 
     def _modify_attributes(self, attribute_method: str, modify_func: Callable) -> Self:
-        if self.has_source_paths():
-            self_or_copied = copy(self)
-        else:
+        attributes = list(getattr(self, attribute_method)())
+        if not attributes and self.within is None and self.fallback is None:
             return self
-        for attr_name in getattr(self_or_copied, attribute_method)():
-            current_value = getattr(self_or_copied, attr_name)
+        copied = copy(self)
+
+        for attr_name in attributes:
+            current_value = getattr(copied, attr_name)
             if current_value is not None:
-                setattr(self_or_copied, attr_name, modify_func(current_value))
+                setattr(copied, attr_name, modify_func(current_value))
 
-        if self_or_copied.within is not None:
-            self_or_copied.within = self_or_copied.within._modify_attributes(
+        if copied.within is not None:
+            copied.within = copied.within._modify_attributes(
                 attribute_method,
                 modify_func,
             )
 
-        if self_or_copied.fallback is not None:
-            self_or_copied.fallback = self_or_copied.fallback._modify_attributes(
+        if copied.fallback is not None:
+            copied.fallback = copied.fallback._modify_attributes(
                 attribute_method,
                 modify_func,
             )
-        return self_or_copied
+        return copied
 
     def __or__(self, other: "EnvSpecBase") -> "EnvSpecBase":
         copied = copy(self)
@@ -341,10 +342,7 @@ class EnvBase(ABC):
         return self._obj_hash
 
     def __eq__(self, other) -> bool:
-        return (
-            self.__class__ == other.__class__
-            and self.hash() == other.hash()
-        )
+        return self.__class__ == other.__class__ and self.hash() == other.hash()
 
 
 class PinnableEnvBase(EnvBase, ABC):
