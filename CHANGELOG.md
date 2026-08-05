@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.18.5](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.4...v0.18.5) (2026-08-05)
+
+
+### Bug Fixes
+
+* apply modify func on all attributes, not only in case of source path attributes ([#62](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/62)) ([fa1971d](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/fa1971dafdb952dd615bb69beda533aeecadbb89))
+* close temp file after creation ([9fa7730](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/9fa7730b2a4f305a9a2ae3f667f0e673c618d336))
+* do not require spec equality if env hashes are the same ([7ae9c5d](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/7ae9c5d108c90616e599d2760add6b6715a49381))
+
 ## [0.18.4](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.3...v0.18.4) (2026-07-24)
 
 
