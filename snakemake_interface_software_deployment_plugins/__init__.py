@@ -126,11 +126,13 @@ class EnvSpecBase(ABC):
         return self._modify_attributes("identity_attributes", modify_func)
 
     def _modify_attributes(self, attribute_method: str, modify_func: Callable) -> Self:
-        if self.has_source_paths():
+        attributes = list(getattr(self, attribute_method)())
+        if attributes:
             self_or_copied = copy(self)
         else:
-            return self
-        for attr_name in getattr(self_or_copied, attribute_method)():
+            self_or_copied = self
+
+        for attr_name in attributes:
             current_value = getattr(self_or_copied, attr_name)
             if current_value is not None:
                 setattr(self_or_copied, attr_name, modify_func(current_value))
