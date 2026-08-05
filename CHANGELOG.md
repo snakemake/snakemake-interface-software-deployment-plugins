@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.6](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.5...v0.18.6) (2026-08-05)
+
+
+### Bug Fixes
+
+* remove suffixes from shell executable name ([e8bdc26](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/e8bdc26a5fc7cf3d2a104ecfa1e0a21d9a3b4c2f))
+
 ## [0.18.5](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.4...v0.18.5) (2026-08-05)
 
 
