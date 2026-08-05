@@ -127,28 +127,27 @@ class EnvSpecBase(ABC):
 
     def _modify_attributes(self, attribute_method: str, modify_func: Callable) -> Self:
         attributes = list(getattr(self, attribute_method)())
-        if attributes:
-            self_or_copied = copy(self)
-        else:
-            self_or_copied = self
+        if not attributes and self.within is None and self.fallback is None:
+            return self
+        copied = copy(self)
 
         for attr_name in attributes:
-            current_value = getattr(self_or_copied, attr_name)
+            current_value = getattr(copied, attr_name)
             if current_value is not None:
-                setattr(self_or_copied, attr_name, modify_func(current_value))
+                setattr(copied, attr_name, modify_func(current_value))
 
-        if self_or_copied.within is not None:
-            self_or_copied.within = self_or_copied.within._modify_attributes(
+        if copied.within is not None:
+            copied.within = copied.within._modify_attributes(
                 attribute_method,
                 modify_func,
             )
 
-        if self_or_copied.fallback is not None:
-            self_or_copied.fallback = self_or_copied.fallback._modify_attributes(
+        if copied.fallback is not None:
+            copied.fallback = copied.fallback._modify_attributes(
                 attribute_method,
                 modify_func,
             )
-        return self_or_copied
+        return copied
 
     def __or__(self, other: "EnvSpecBase") -> "EnvSpecBase":
         copied = copy(self)
