@@ -1,3 +1,4 @@
+from collections.abc import Set
 from typing import Union
 from typing import List
 from pathlib import Path
@@ -183,6 +184,10 @@ class TestSoftwareDeploymentBase(ABC):
         """
         pass
 
+    def get_envvars(self) -> Set[str]:
+        """Return set of environment variables to be passed to the environment."""
+        return set()
+
     def _get_env(self, tmp_path) -> EnvBase:
         self.setup_workspace(tmp_path)
 
@@ -241,6 +246,7 @@ class TestSoftwareDeploymentBase(ABC):
             shell_executable=self.shell_executable,
             tempdir=tempdir,
             mountpoints=[Path(os.getcwd())] + mountpoints,
+            envvars=self.get_envvars(),
             deployment_prefix=deployment_prefix,
             cache_prefix=cache_prefix,
             pinfile_prefix=pinfile_prefix,
