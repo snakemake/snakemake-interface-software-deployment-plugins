@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.19.1...v0.19.2) (2026-09-07)
+
+
+### Bug Fixes
+
+* pass envvars to test environments ([#67](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/67)) ([9faf962](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/9faf962083390ab5dfb9ae7fcc9844a00f316f22))
+
 ## [0.19.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.19.0...v0.19.1) (2026-09-07)
 
 
