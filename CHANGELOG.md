@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.19.0...v0.19.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* update twine to match changes in hatchling ([ab1db16](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/ab1db1637eb086e09907d960f3c639a556260b8b))
+
 ## [0.19.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.6...v0.19.0) (2026-09-07)
 
 
