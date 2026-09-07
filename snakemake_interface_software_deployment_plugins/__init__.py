@@ -1,3 +1,4 @@
+from collections.abc import Set
 import tempfile
 import os
 
@@ -203,6 +204,7 @@ class EnvBase(ABC):
         settings,
         shell_executable: ShellExecutable,
         mountpoints: List[Path],
+        envvars: Set[str],
         tempdir: Path,
         cache_prefix: Path,
         deployment_prefix: Path,
@@ -214,6 +216,7 @@ class EnvBase(ABC):
         self.settings = settings
         self.shell_executable = shell_executable
         self.mountpoints = [mountpoint.absolute() for mountpoint in mountpoints]
+        self.envvars = envvars
         self.tempdir = tempdir
         self._deployment_prefix: Path = deployment_prefix
         self._cache_prefix: Path = cache_prefix
