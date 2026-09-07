@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.19.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.6...v0.19.0) (2026-09-07)
+
+
+### Features
+
+* add method for workspace setup within tmp_path ([48591e7](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/48591e70773b4b58f32d2c2f019c7cbd9a9fdec6))
+* provide envvars set for passing them to environments/containers ([#65](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/65)) ([ab0aa11](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/ab0aa1198bdece1d0a96f6c59202f0b32d0fd5fd))
+
 ## [0.18.6](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.18.5...v0.18.6) (2026-08-05)
 
 
