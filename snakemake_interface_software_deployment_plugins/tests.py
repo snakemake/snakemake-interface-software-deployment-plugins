@@ -176,7 +176,16 @@ class TestSoftwareDeploymentBase(ABC):
                 source_file.cached = Path(source_file.path_or_uri)
         return spec
 
+    def setup_workspace(self, tmp_path) -> None:
+        """
+        Setup a workspace for testing. This method can be overridden by subclasses
+        to provide additional setup steps.
+        """
+        pass
+
     def _get_env(self, tmp_path) -> EnvBase:
+        self.setup_workspace(tmp_path)
+
         env_cls = self.get_env_cls()
         spec = self._get_cached_env_spec()
         settings = self.get_settings()
