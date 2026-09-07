@@ -10,7 +10,7 @@ version = "0.18.6"
 requires-python = ">=3.11,<4.0"
 dependencies = [
     "argparse-dataclass >=2.0.0,<3.0",
-    "snakemake-interface-common >=1.23.0,<2.0.0"
+    "snakemake-interface-common >=1.23.1,<2.0.0"
 ]
 
 [project.urls]
@@ -60,7 +60,7 @@ exclude_lines = ["pass", "\\.\\.\\."]
 fail_under = 61.0
 
 [tool.pixi.feature.publish.pypi-dependencies]
-twine = ">=6.1.0,<7"
+twine = ">=7.0.0,<8"
 build = ">=1.2.2,<2"
 
 
