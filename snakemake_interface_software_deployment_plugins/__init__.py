@@ -488,3 +488,7 @@ class DeployableEnvBase(EnvBase, ABC):
     def deployment_path(self) -> Path:
         assert self._deployment_prefix is not None
         return self._deployment_prefix / self.deployment_hash()
+
+    @property
+    def deployment_prefix(self) -> Path:
+        return self._deployment_prefix
