@@ -491,4 +491,11 @@ class DeployableEnvBase(EnvBase, ABC):
 
     @property
     def deployment_prefix(self) -> Path:
+        """Return the deployment prefix, which is the base directory where the
+        environment will be deployed. The actual deployment path is determined by
+        appending the deployment hash to this prefix.
+
+        It is allowed to use this prefix for further deployment related
+        subdirectories, e.g. for storing unpacked assets.
+        """
         return self._deployment_prefix
