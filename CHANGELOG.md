@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.19.2...v0.20.0) (2026-09-17)
+
+
+### Features
+
+* expose self.deployment_prefix to subclasses ([#69](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/69)) ([6a41c08](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/6a41c08f22d512373a87f6d8101c6f65eb8d0ce5))
+
 ## [0.19.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.19.1...v0.19.2) (2026-09-07)
 
 
