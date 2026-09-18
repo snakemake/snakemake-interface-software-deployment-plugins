@@ -417,6 +417,9 @@ class CacheableEnvBase(EnvBase, ABC):
 
     @property
     def get_cache_asset_path(self, asset: str) -> Path:
+        """Return the path to the cached asset.
+        This does not check whether the asset exists.
+        """
         return self.cache_path / asset
 
     async def remove_cache(self) -> None:
