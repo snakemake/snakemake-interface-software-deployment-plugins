@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.20.0...v0.21.0) (2026-09-18)
+
+
+### Features
+
+* provide method for retrieving the cache_asset path of a given asset ([#71](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/issues/71)) ([7f41c7d](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/7f41c7d36fda57d0479bdca1df725ff265154ee8))
+
 ## [0.20.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.19.2...v0.20.0) (2026-09-17)
 
 
