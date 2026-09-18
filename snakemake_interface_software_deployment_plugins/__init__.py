@@ -399,7 +399,7 @@ class CacheableEnvBase(EnvBase, ABC):
         )
         os.close(fd)
         tmp_cache_path = Path(tmp_cache_path)
-        cache_path = self.cache_path / asset
+        cache_path = self.get_cache_asset_path(asset)
         try:
             await self.cache_asset(asset, tmp_cache_path)
             os.replace(tmp_cache_path, cache_path)
@@ -414,6 +414,10 @@ class CacheableEnvBase(EnvBase, ABC):
     @property
     def cache_path(self) -> Path:
         return self._cache_prefix
+
+    @property
+    def get_cache_asset_path(self, asset: str) -> Path:
+        return self.cache_path / asset
 
     async def remove_cache(self) -> None:
         """Remove the cached environment assets."""
