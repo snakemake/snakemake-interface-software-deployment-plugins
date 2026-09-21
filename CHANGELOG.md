@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.21.1...v0.21.2) (2026-09-21)
+
+
+### Bug Fixes
+
+* remove wrong property decorator from get_cache_asset_path ([58ca875](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/58ca875e21b7d8a60f818f4508acf5ee91d01452))
+
 ## [0.21.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.21.0...v0.21.1) (2026-09-21)
 
 
