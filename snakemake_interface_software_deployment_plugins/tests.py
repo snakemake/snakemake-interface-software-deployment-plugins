@@ -101,7 +101,7 @@ class TestSoftwareDeploymentBase(ABC):
         assert cmd != decorated_cmd
         assert env.run_cmd(decorated_cmd).returncode == 0
 
-    async def _cache_assets(env):
+    async def _cache_assets(self, env):
         for asset in await env.get_cache_assets():
             await env.managed_cache_asset(asset)
 
@@ -118,7 +118,7 @@ class TestSoftwareDeploymentBase(ABC):
 
         assert isinstance(env, CacheableEnvBase)
 
-        asyncio.run(self.cache_assets(env))
+        asyncio.run(self._cache_assets(env))
 
         assert any(env.cache_path.iterdir())
 
