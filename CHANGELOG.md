@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.1](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.21.0...v0.21.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* fix test method name and signature ([fa6425d](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/fa6425de0af32d6868c169fc7e286648c778200b))
+
 ## [0.21.0](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.20.0...v0.21.0) (2026-09-18)
 
 
