@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.3](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.21.2...v0.21.3) (2026-11-02)
+
+
+### Bug Fixes
+
+* improved error formatting including class name ([6313060](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/commit/6313060c35c23cdedd509636ad29d07ca69bbf7a))
+
 ## [0.21.2](https://github.com/snakemake/snakemake-interface-software-deployment-plugins/compare/v0.21.1...v0.21.2) (2026-09-21)
 
 
